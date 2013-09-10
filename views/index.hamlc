@@ -1,0 +1,26 @@
+!!! 5
+%html
+  %head
+    %link(rel="stylesheet" href="style/main.css" type="text/css")
+
+  %body
+    %h1
+      = "hello #{@name}"
+
+    %button(onclick="MM.line({notes: line})"
+      play
+
+    %p
+      MIDI Input:
+      %select#midiIn(onchange='changeMidiIn();')
+        %option(value="")
+          Not connected
+      MIDI Output:
+      %select#midiOut(onchange='changeMidiOut();')
+        %option(value="")
+          Not connected
+
+    %script(type='text/javascript' src="js/midi/WMAS.js")
+    %script(type='text/javascript' src="js/midi/initMidi.js")
+    %script(data-main="js/main" src="js/vendors/require_min.js")
+

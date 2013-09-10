@@ -1,0 +1,13 @@
+express = require 'express'
+app = express()
+path = require('path')
+
+app.engine 'hamlc', require('haml-coffee').__express
+app.set("view engine", "hamlc");
+app.use '/js', express.static(path.join(__dirname, '/public/js'))
+
+app.get '/' , (req, res) ->
+  res.render 'index', name: "bob"
+
+app.listen 3000  
+console.log "listening on port 3000"
