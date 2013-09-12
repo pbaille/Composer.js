@@ -30,7 +30,7 @@
         n = _ref[_i];
         MyMIDI.play({
           note: n,
-          at: time_position
+          at: time_position + at
         });
         if (n.duration) {
           dur = n.duration.toFloat();

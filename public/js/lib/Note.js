@@ -4,7 +4,7 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["lib/Rational", "../../js/vendors/ruby"], function(Rational, ruby) {
+  define(["lib/Rational", "vendors/ruby"], function(Rational, ruby) {
     var root;
     if (typeof global !== "undefined" && global !== null) {
       root = global;
@@ -132,16 +132,20 @@
     root.Note = (function(_super) {
       __extends(Note, _super);
 
-      function Note(pitch, vel, duration) {
+      function Note(pitch, vel, duration, position) {
         if (vel == null) {
           vel = 60;
         }
         if (duration == null) {
           duration = 1;
         }
+        if (position == null) {
+          position = 0;
+        }
         this.pitch = new root.Pitch(pitch);
         this.velocity = vel;
         this.duration = duration;
+        this.position = position;
       }
 
       return Note;

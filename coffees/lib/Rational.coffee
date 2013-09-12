@@ -87,7 +87,14 @@ define [], () ->
       d = @denom * rat.denom
       result = new Rational(n,d)
       result.normalize()  
-      result    
+      result   
+
+    minus : (rat)->
+      n = @numer * rat.denom - @denom * rat.numer
+      d = @denom * rat.denom
+      result = new Rational(n,d)
+      result.normalize()  
+      result  
     
     # variadic, modifies receiver
     subtract : ->

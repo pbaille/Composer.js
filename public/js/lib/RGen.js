@@ -2,8 +2,8 @@
 (function() {
   var __slice = [].slice;
 
-  define(["lib/Rational", "lib/Note", "../../js/vendors/ruby"], function(Rational, Note, ruby) {
-    var RGen, root;
+  define(["lib/Rational", "lib/Note", "lib/play", "vendors/ruby"], function(Rational, note, midi, ruby) {
+    var root;
     if (typeof global !== "undefined" && global !== null) {
       root = global;
     } else {
@@ -18,11 +18,14 @@
         return Object(result) === result ? result : child;
       })(Rational, args, function(){});
     };
-    RGen = root.RGen;
-    return RGen = (function() {
-      function RGen(dur_occ_obj_arr) {
-        this.array = dur_occ_obj_arr;
+    return root.RGen = (function() {
+      function RGen(dur_occ_obj_arr, streamLen) {
+        if (streamLen == null) {
+          streamLen = 10;
+        }
+        this.array = dur_occ_obj_arr || [];
         this.clock = rat(0, 1);
+        this.streamLen = streamLen;
       }
 
       RGen.prototype.add = function(dur_occ_obj) {
@@ -37,6 +40,29 @@
           _results.push(this.array.push(x));
         }
         return _results;
+      };
+
+      RGen.prototype.reset = function(dur_occ_objs) {
+        console.log("reset gen");
+        this.array = [];
+        if (dur_occ_objs) {
+          return this.add(dur_occ_objs);
+        }
+      };
+
+      RGen.prototype.reset_clock = function() {
+        return this.clock = rat(0, 1);
+      };
+
+      RGen.prototype.rvs_sync = function(rvs_table) {
+        var _this = this;
+        this.reset();
+        return _h.each(rvs_table, function(k, v) {
+          return _this.add({
+            value: rat(1, k),
+            occ: v
+          });
+        });
       };
 
       RGen.prototype.remove = function(dur) {
@@ -77,18 +103,21 @@
         return res;
       };
 
-      RGen.prototype.next = function(n) {
-        var f, result, _i,
+      RGen.prototype.next = function(n, plan_offset) {
+        var f, result, start_time, _i,
           _this = this;
         result = [];
+        start_time = plan_offset || this.clock.toFloat();
         f = function() {
           var available_vals, i, pioche, x, _i, _j, _k, _len, _len1, _ref, _ref1;
           available_vals = [];
           _ref = _this.array;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             x = _ref[_i];
-            if (_this.denoms().indexOf(x.value.plus(_this.clock).denom) >= 0) {
-              available_vals.push(x);
+            if (x.occ !== 0) {
+              if (_this.denoms().indexOf(x.value.plus(_this.clock).denom) >= 0) {
+                available_vals.push(x);
+              }
             }
           }
           pioche = [];
@@ -105,8 +134,46 @@
         for (_i = 1; 1 <= n ? _i <= n : _i >= n; 1 <= n ? _i++ : _i--) {
           f();
         }
-        return result;
+        this.plan_next_stream(start_time);
+        return this.melodize(result);
       };
+
+      RGen.prototype.plan_next_stream = function(start_time) {
+        var at, cb,
+          _this = this;
+        at = (this.clock.toFloat() - start_time) * 1000;
+        cb = function() {
+          return _this.next(_this.streamLen);
+        };
+        return setTimeout(cb, at);
+      };
+
+      RGen.prototype.play = function() {
+        this.time_origin = window.performance.now();
+        this.reset_clock();
+        return this.next(this.streamLen);
+      };
+
+      RGen.prototype.melodize = function(rythmic_line) {
+        var duration, line, n, pitch, vel, _i, _len;
+        line = [];
+        for (_i = 0, _len = rythmic_line.length; _i < _len; _i++) {
+          duration = rythmic_line[_i];
+          pitch = Math.floor(Math.random() * 30 + 40);
+          vel = Math.floor(Math.random() * 30 + 40);
+          n = new Note(pitch, vel, duration);
+          line.push(n);
+        }
+        return this.send_to_midi(line);
+      };
+
+      RGen.prototype.send_to_midi = function(line) {
+        return midi.line({
+          notes: line
+        });
+      };
+
+      RGen.prototype.pause = function() {};
 
       return RGen;
 

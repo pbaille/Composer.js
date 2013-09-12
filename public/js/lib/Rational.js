@@ -89,6 +89,15 @@
         return result;
       };
 
+      Rational.prototype.minus = function(rat) {
+        var d, n, result;
+        n = this.numer * rat.denom - this.denom * rat.numer;
+        d = this.denom * rat.denom;
+        result = new Rational(n, d);
+        result.normalize();
+        return result;
+      };
+
       Rational.prototype.subtract = function() {
         var i;
         i = 0;

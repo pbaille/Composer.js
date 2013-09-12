@@ -1,14 +1,17 @@
 !!! 5
 %html
   %head
-    %link(rel="stylesheet" href="style/main.css" type="text/css")
+    %link(rel="stylesheet" href="stylesheets/style.css" type="text/css")
+    %script(data-main="js/main" src="js/vendors/require_min.js")
 
   %body
     %h1
       = "hello #{@name}"
 
-    %button(onclick="MM.line({notes: line})"
+    %button(onclick="rythmnValSel.generator.play();"
       play
+    %button(onclick="rythmnValSel.generator.pause();"
+      pause  
 
     %p
       MIDI Input:
@@ -20,7 +23,10 @@
         %option(value="")
           Not connected
 
+    #rvs
     %script(type='text/javascript' src="js/midi/WMAS.js")
     %script(type='text/javascript' src="js/midi/initMidi.js")
-    %script(data-main="js/main" src="js/vendors/require_min.js")
+
+    /templates
+    %script(data-main="js/main" src="views/test.jst")
 

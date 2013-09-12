@@ -1,4 +1,4 @@
-define ["lib/Rational", "../../js/vendors/ruby"], (Rational, ruby) ->
+define ["lib/Rational", "vendors/ruby"], (Rational, ruby) ->
 
   if typeof global != "undefined" && global != null 
     root= global
@@ -92,10 +92,11 @@ define ["lib/Rational", "../../js/vendors/ruby"], (Rational, ruby) ->
   #########################################################################
   class root.Note extends root.Pitch
   
-    constructor: (pitch, vel = 60 , duration = 1) ->
-    	@pitch = new root.Pitch pitch
-    	@velocity = vel
-    	@duration = duration
+    constructor: (pitch, vel = 60 , duration = 1, position = 0) ->
+      @pitch = new root.Pitch pitch
+      @velocity = vel
+      @duration = duration
+      @position = position
   
   #########################################################################
   return root
