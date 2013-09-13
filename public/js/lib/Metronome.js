@@ -46,8 +46,6 @@
             l.bang(_this);
           }
           diff = _this.check_precision();
-          console.log("diff= " + diff);
-          console.log("precision" + _this.check_precision());
           if (_this.is_on) {
             return setTimeout(instance, speed - diff);
           }

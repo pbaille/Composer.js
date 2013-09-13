@@ -64,9 +64,6 @@ define [], () ->
         #diff = (new Date().getTime() - start) - (@count * speed)
         #diff = (window.performance.now() - start) - (@count * speed)
         diff = @check_precision()
-        console.log "diff= " + diff
-        console.log "precision" + @check_precision()
-
         setTimeout instance, (speed - diff) if @is_on
       
       setTimeout instance, speed
