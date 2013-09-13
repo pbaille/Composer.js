@@ -119,7 +119,6 @@
           }
           this.int = this.int + (octave + 5) * 12;
         } else {
-          console.log("hello");
           Pitch.__super__.constructor.call(this, pitchClass % 12);
           this.octave = octave || Math.floor(pitchClass / 12 - 5);
         }

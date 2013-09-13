@@ -84,7 +84,6 @@ define ["lib/Rational", "vendors/ruby"], (Rational, ruby) ->
     	    @octave = 0 
     	  @int = @int + (octave+5)*12  
     	else
-    	  console.log "hello"
     	  super pitchClass%12
     	  @octave = octave || Math.floor pitchClass/12 - 5    
   		  @value = pitchClass%12 + ( @octave + 5 ) * 12

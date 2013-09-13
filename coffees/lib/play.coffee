@@ -11,8 +11,14 @@ define [], () ->
       notes = [notes]
 
     for n in notes
-      midiOut.send([channel , n.pitch.value, n.velocity], window.performance.now() + at) #on
-      midiOut.send([channel , n.pitch.value, 0], window.performance.now() + at + n.duration.toFloat() * 1000) #off
+      console.log "******"
+      console.log window.performance.now()
+      console.log at
+      console.log at + n.duration.toFloat() * 1000
+      console.log "******"
+
+      midiOut.send([channel , n.pitch.value, n.velocity], at) #on
+      midiOut.send([channel , n.pitch.value, 0], at + n.duration.toFloat() * 1000) #off
       
     "play_end"
 

@@ -82,6 +82,9 @@
 
       Rational.prototype.plus = function(rat) {
         var d, n, result;
+        if (!rat.numer) {
+          rat = new Rational(rat, 1);
+        }
         n = this.numer * rat.denom + this.denom * rat.numer;
         d = this.denom * rat.denom;
         result = new Rational(n, d);
@@ -91,6 +94,9 @@
 
       Rational.prototype.minus = function(rat) {
         var d, n, result;
+        if (!rat.numer) {
+          rat = new Rational(rat, 1);
+        }
         n = this.numer * rat.denom - this.denom * rat.numer;
         d = this.denom * rat.denom;
         result = new Rational(n, d);
@@ -101,9 +107,9 @@
       Rational.prototype.subtract = function() {
         var i;
         i = 0;
-        while (i < arguments_.length) {
-          this.numer = this.numer * arguments_[i].denominator() - this.denom * arguments_[i].numerator();
-          this.denom = this.denom * arguments_[i].denominator();
+        while (i < arguments.length) {
+          this.numer = this.numer * arguments[i].denominator() - this.denom * arguments[i].numerator();
+          this.denom = this.denom * arguments[i].denominator();
           i++;
         }
         return this.normalize();
@@ -113,12 +119,22 @@
         return (new Rational(0)).subtract(this);
       };
 
+      Rational.prototype.times = function(rat) {
+        var d, n;
+        if (!rat.numer) {
+          rat = new Rational(rat, 1);
+        }
+        n = this.numer * rat.numer;
+        d = this.denom * rat.denom;
+        return new Rational(n, d);
+      };
+
       Rational.prototype.multiply = function() {
         var i;
         i = 0;
-        while (i < arguments_.length) {
-          this.numer *= arguments_[i].numerator();
-          this.denom *= arguments_[i].denominator();
+        while (i < arguments.length) {
+          this.numer *= arguments[i].numerator();
+          this.denom *= arguments[i].denominator();
           i++;
         }
         return this.normalize();

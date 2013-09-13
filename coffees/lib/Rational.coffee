@@ -83,6 +83,7 @@ define [], () ->
       @normalize()
 
     plus : (rat)->
+      rat = new Rational(rat,1) unless rat.numer #convert integer to rational
       n = @numer * rat.denom + @denom * rat.numer
       d = @denom * rat.denom
       result = new Rational(n,d)
@@ -90,6 +91,7 @@ define [], () ->
       result   
 
     minus : (rat)->
+      rat = new Rational(rat,1) unless rat.numer #convert integer to rational
       n = @numer * rat.denom - @denom * rat.numer
       d = @denom * rat.denom
       result = new Rational(n,d)
@@ -100,9 +102,9 @@ define [], () ->
     subtract : ->
       i = 0
     
-      while i < arguments_.length
-        @numer = @numer * arguments_[i].denominator() - @denom * arguments_[i].numerator()
-        @denom = @denom * arguments_[i].denominator()
+      while i < arguments.length
+        @numer = @numer * arguments[i].denominator() - @denom * arguments[i].numerator()
+        @denom = @denom * arguments[i].denominator()
         i++
       @normalize()
     
@@ -112,14 +114,18 @@ define [], () ->
     neg : ->
       (new Rational(0)).subtract this
     
-    
+    times : (rat)->
+      rat = new Rational(rat,1) unless rat.numer #convert integer to rational
+      n = @numer * rat.numer
+      d = @denom * rat.denom
+      new Rational(n,d)      
     # variadic, modifies receiver
     multiply : ->
       i = 0
     
-      while i < arguments_.length
-        @numer *= arguments_[i].numerator()
-        @denom *= arguments_[i].denominator()
+      while i < arguments.length
+        @numer *= arguments[i].numerator()
+        @denom *= arguments[i].denominator()
         i++
       @normalize()
     

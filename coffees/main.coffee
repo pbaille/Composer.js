@@ -14,9 +14,26 @@ require ["lib/music-module","lib/UIobjects/RythmnValSelector",
 "jquery"], (rvs, $)->
 
   jQuery ($) ->
+
+    window.rgen = new RGen2
+      prob_array: [
+        {value: rat(1,2), occ: 1}
+        {value: rat(1,4), occ: 1}
+        {value: rat(3,8), occ: 3}
+        {value: rat(1,3), occ: 1}
+        {value: rat(1,6), occ: 1}
+      ]
+      streamLen: rat(2,1)
+
     window.rythmnValSel = new RVS 
       el: "#rvs"
-      generator: new RGen
+      generator: rgen
+
+    window.maestro = new Metronome
+      bpm: 30
+      beats: 4
+      unit: 4
+      listeners: [rgen]
 
     
 

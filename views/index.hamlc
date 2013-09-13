@@ -8,7 +8,7 @@
     %h1
       = "hello #{@name}"
 
-    %button(onclick="rythmnValSel.generator.play();"
+    %button(onclick="maestro.start();"
       play
     %button(onclick="rythmnValSel.generator.pause();"
       pause  
