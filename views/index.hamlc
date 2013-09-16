@@ -6,12 +6,14 @@
 
   %body
     %h1
-      = "hello #{@name}"
+      = "Welcome to #{@app}"
 
     %button(onclick="maestro.start();"
       play
     %button(onclick="rythmnValSel.generator.pause();"
       pause  
+    #tempo
+      0
 
     %p
       MIDI Input:
@@ -24,9 +26,7 @@
           Not connected
 
     #rvs
-    %script(type='text/javascript' src="js/midi/WMAS.js")
-    %script(type='text/javascript' src="js/midi/initMidi.js")
 
-    /templates
-    %script(data-main="js/main" src="views/test.jst")
+    %script(type='text/javascript' src="js/vendors/midi/WMAS.js")
+    %script(type='text/javascript' src="js/vendors/midi/initMidi.js")
 

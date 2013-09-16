@@ -17,38 +17,40 @@
     }
   });
 
-  require(["lib/music-module", "lib/UIobjects/RythmnValSelector", "jquery"], function(rvs, $) {
+  window.AC = {};
+
+  window.AC.Core = {};
+
+  window.AC.MIDI = {};
+
+  window.AC.Utils = {};
+
+  window.AC.GUI = {};
+
+  require(["lib/core/index", "lib/GUI/index", "lib/midi/index", "lib/utils/index", "jquery"], function() {
+    window.rat = function(n, d) {
+      return new AC.Utils.Rational(n, d);
+    };
     return jQuery(function($) {
-      window.rgen = new RGen2({
-        prob_array: [
-          {
-            value: rat(1, 2),
-            occ: 1
-          }, {
-            value: rat(1, 4),
-            occ: 1
-          }, {
-            value: rat(3, 8),
-            occ: 3
-          }, {
-            value: rat(1, 3),
-            occ: 1
-          }, {
-            value: rat(1, 6),
-            occ: 1
-          }
-        ],
+      window.rgen = new AC.Core.RGen({
         streamLen: rat(2, 1)
       });
-      window.rythmnValSel = new RVS({
+      window.rythmnValSel = new AC.GUI.RVS({
         el: "#rvs",
+        table: {
+          4: 1,
+          10: 1
+        },
         generator: rgen
       });
-      return window.maestro = new Metronome({
-        bpm: 30,
-        beats: 4,
+      return window.maestro = new AC.Core.Metronome({
+        bpm: 100,
+        beats: 5,
         unit: 4,
-        listeners: [rgen]
+        listeners: [rgen],
+        on_click: function() {
+          return $('#tempo').html("" + (this.bars + '>' + this.count));
+        }
       });
     });
   });
