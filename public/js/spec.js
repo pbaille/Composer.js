@@ -38,7 +38,7 @@
     jasmineEnv.specFilter = function(spec) {
       return htmlReporter.specFilter(spec);
     };
-    specs = ["spec/RVal.spec", "spec/Degree.spec", "spec/Array_adds.spec", "spec/AbstractMode.spec", "spec/Constants.spec"];
+    specs = ["spec/RVal.spec", "spec/Degree.spec", "spec/Array_adds.spec", "spec/AbstractMode.spec", "spec/Mode.spec", "spec/Constants.spec", "spec/Domain.spec"];
     return $(function() {
       return require(specs, function(spec) {
         return jasmineEnv.execute();

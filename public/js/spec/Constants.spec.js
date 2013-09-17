@@ -5,7 +5,6 @@
     MK = AC.Core.MK;
     return describe("MK class", function() {
       return it("return all modes", function() {
-        console.log(MK.all_modes);
         return expect(MK.all_modes["Alt"]).toEqual([0, 1, 3, 4, 6, 8, 10]);
       });
     });

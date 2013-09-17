@@ -3,7 +3,7 @@
   var __slice = [].slice;
 
   define(["lib/utils/Rational", "lib/utils/Utils", "lib/core/Note", "lib/midi/play", "vendors/ruby"], function() {
-    var rat, rgen, root;
+    var rat, root;
     if (typeof global !== "undefined" && global !== null) {
       root = global.AC.Core;
     } else {
@@ -18,7 +18,7 @@
         return Object(result) === result ? result : child;
       })(AC.Utils.Rational, args, function(){});
     };
-    root.RGen = (function() {
+    return root.RGen = (function() {
       function RGen(opt) {
         this.array = opt.prob_array || [];
         this.head_position = null;
@@ -40,7 +40,6 @@
       };
 
       RGen.prototype.reset = function(dur_occ_objs) {
-        console.log("reset gen");
         this.array = [];
         if (dur_occ_objs) {
           return this.add(dur_occ_objs);
@@ -237,30 +236,6 @@
       return RGen;
 
     })();
-    console.log("RGen test ################################");
-    rgen = new AC.Core.RGen({
-      prob_array: [
-        {
-          value: rat(1, 2),
-          occ: 1
-        }, {
-          value: rat(1, 4),
-          occ: 1
-        }, {
-          value: rat(3, 8),
-          occ: 3
-        }, {
-          value: rat(1, 3),
-          occ: 1
-        }, {
-          value: rat(1, 6),
-          occ: 1
-        }
-      ],
-      streamLen: rat(2, 1)
-    });
-    console.log("denoms" + rgen.denoms());
-    return console.log("######################################");
   });
 
 }).call(this);

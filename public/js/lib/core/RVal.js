@@ -4,13 +4,13 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(["lib/utils/Rational", "lib/utils/Utils", "vendors/ruby"], function() {
-    var a, root;
+    var root;
     if (typeof global !== "undefined" && global !== null) {
       root = global.AC.Core;
     } else {
       root = window.AC.Core;
     }
-    root.RVal = (function(_super) {
+    return root.RVal = (function(_super) {
       __extends(RVal, _super);
 
       function RVal(num, den) {
@@ -38,10 +38,6 @@
       return RVal;
 
     })(AC.Utils.Rational);
-    a = new AC.Core.RVal(1, 20);
-    console.log(a.toString());
-    console.log(a.to_ms(120));
-    return console.log(a.polyrythmic_base());
   });
 
 }).call(this);

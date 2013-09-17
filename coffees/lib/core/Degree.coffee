@@ -9,9 +9,9 @@ define ["lib/core/Constants"], () ->
 
   class root.Degree
 
-    NAME_DIST_MAP= {"m2":1,"M2":2,"#2":3,"o3":2,"m3":3,"M3":4,"#3":5,"b4":4,"P4":5,"+4":6,"b5":6,"P5":7,"+5":8,"m6":8,"M6":9,"#6":10,"o7":9,"m7":10,"M7":11}
-    DEFAULTS= {"root" : "C ", "second" : "M2", "third" : "M3", "fourth" : "P4", "fifth" : "P5", "sixt" : "M6", "seventh" : "M7"}
-    ALTERATIONS=
+    @NAME_DIST_MAP= {"m2":1,"M2":2,"#2":3,"o3":2,"m3":3,"M3":4,"#3":5,"b4":4,"P4":5,"+4":6,"b5":6,"P5":7,"+5":8,"m6":8,"M6":9,"#6":10,"o7":9,"m7":10,"M7":11}
+    @DEFAULTS= {"root" : "C ", "second" : "M2", "third" : "M3", "fourth" : "P4", "fifth" : "P5", "sixt" : "M6", "seventh" : "M7"}
+    @ALTERATIONS=
       root: 
         {0 : "R"}
       second : 
@@ -34,15 +34,15 @@ define ["lib/core/Constants"], () ->
       unless test  # args[0] is a generic_name (NaN is falsy)
         @generic_name= args[0]
         if args.length == 2 # generic name + dist
-          @name= ALTERATIONS[args[0]][args[1]]
+          @name= root.Degree.ALTERATIONS[args[0]][args[1]]
         else
-          @name = DEFAULTS[args[0]] 
+          @name = root.Degree.DEFAULTS[args[0]] 
 
       else # args[0] is a name
         @name = args[0]
         @generic_name= MK.ABSTRACT_DEGREES[Number(args[0][1]) - 1]
 
-      @dist= NAME_DIST_MAP[@name]
+      @dist= root.Degree.NAME_DIST_MAP[@name]
 
 
     alt: (modifier) ->
@@ -54,7 +54,7 @@ define ["lib/core/Constants"], () ->
 
     @alt_map: ->
       dam= {}
-      for k,v of NAME_DIST_MAP
+      for k,v of root.Degree.NAME_DIST_MAP
         index = Number(k[1]) - 1
         dam[MK.ABSTRACT_DEGREES[index]] = [] unless dam[MK.ABSTRACT_DEGREES[index]]
         dam[MK.ABSTRACT_DEGREES[index]].push k

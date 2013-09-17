@@ -27,7 +27,7 @@ define ["lib/utils/Rational","lib/utils/Utils", "lib/core/Note", "lib/midi/play"
         @array.push x
 
     reset: (dur_occ_objs) ->
-      console.log "reset gen"
+      #console.log "reset gen"
       @array = []
       @add dur_occ_objs if dur_occ_objs
 
@@ -131,7 +131,7 @@ define ["lib/utils/Rational","lib/utils/Utils", "lib/core/Note", "lib/midi/play"
           # push value in result if value + @head_position is on a available subdivision
           cond1 = @denoms().indexOf(x.value.plus(@head_position).denom) >= 0
 
-          #to avoid too much polyrythmn
+          #to avoid too much polyrythmn, TODO: turn it into a user param
           cond2 = () =>
             console.log "###################################"
             console.log "cond2 " + @current_sub()
@@ -187,21 +187,21 @@ define ["lib/utils/Rational","lib/utils/Utils", "lib/core/Note", "lib/midi/play"
 
     pause: () ->  
 
-  console.log "RGen test ################################"
+  # console.log "RGen test ################################"
 
-  rgen = new AC.Core.RGen
-    prob_array: [
-      {value: rat(1,2), occ: 1}
-      {value: rat(1,4), occ: 1}
-      {value: rat(3,8), occ: 3}
-      {value: rat(1,3), occ: 1}
-      {value: rat(1,6), occ: 1}
-    ]
-    streamLen: rat(2,1)  
+  # rgen = new AC.Core.RGen
+  #   prob_array: [
+  #     {value: rat(1,2), occ: 1}
+  #     {value: rat(1,4), occ: 1}
+  #     {value: rat(3,8), occ: 3}
+  #     {value: rat(1,3), occ: 1}
+  #     {value: rat(1,6), occ: 1}
+  #   ]
+  #   streamLen: rat(2,1)  
 
-  console.log "denoms" + rgen.denoms()
+  # console.log "denoms" + rgen.denoms()
 
-  console.log "######################################"    
+  # console.log "######################################"    
 
 
 

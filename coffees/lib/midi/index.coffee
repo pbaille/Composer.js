@@ -1,2 +1,2 @@
-define ["vendors/midi/WMAS","vendors/midi/initMidi","lib/midi/play"], () ->
+define ["lib/midi/play"], () ->
 	console.log "MIDI_loaded"

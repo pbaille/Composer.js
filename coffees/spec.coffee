@@ -37,7 +37,9 @@ require ["jquery", "jasmine-html"], ($, jasmine) ->
     "spec/Degree.spec"
     "spec/Array_adds.spec"
     "spec/AbstractMode.spec"
+    "spec/Mode.spec"
     "spec/Constants.spec"
+    "spec/Domain.spec"
   ]
 
   $ ->

@@ -34,6 +34,8 @@ function onMIDIFail( err ) {
 
 function onMIDIInit( midi ) {
   // var preferredIndex = 0;
+  console.log("midi init")
+  console.log(midi)
   midiAccess = midi;
   selectMIDIIn=document.getElementById("midiIn");
   selectMIDIOut=document.getElementById("midiOut");
@@ -63,6 +65,7 @@ function onMIDIInit( midi ) {
       selectMIDIOut.options[i]=new Option(list[i].name,list[i].fingerprint);
 
     midiOut = list[0];
+    console.log(midiOut);
     selectMIDIOut.onchange = changeMIDIOut;
   }
 }

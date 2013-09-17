@@ -43,7 +43,7 @@
             this.degree = v.degrees.indexOf(s) + 1;
             this.functs = this.childs(k)[this.degree - 1];
             this.mother = AbstractMode.Abs_moth(k, v.functs);
-            _results.push(this.prio = v.modes_prio[this.degree]);
+            _results.push(this.prio = v.modes_prio[this.degree - 1]);
           } else {
             _results.push(void 0);
           }
@@ -66,7 +66,6 @@
 
       AbstractMode.prototype.new_by_functs = function(a) {
         var k, v, _ref;
-        console.log("new by functs");
         _ref = MK.all_modes;
         for (k in _ref) {
           v = _ref[k];

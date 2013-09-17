@@ -38,9 +38,9 @@ define ["lib/utils/Rational","lib/utils/Utils", "vendors/ruby"], () ->
 
 
   
-  a = new AC.Core.RVal(1,20)
-  console.log a.toString()
-  console.log a.to_ms(120)
-  console.log a.polyrythmic_base()
+  # a = new AC.Core.RVal(1,20)
+  # console.log a.toString()
+  # console.log a.to_ms(120)
+  # console.log a.polyrythmic_base()
 
 

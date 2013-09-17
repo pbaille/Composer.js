@@ -25,7 +25,7 @@ define ["lib/core/Constants", "lib/utils/Array_adds"], () ->
           @degree= v.degrees.indexOf(s) + 1
           @functs=@childs(k)[@degree-1]
           @mother=AbstractMode.Abs_moth(k,v.functs)
-          @prio=v.modes_prio[@degree] 
+          @prio=v.modes_prio[@degree-1] 
 
 
     new_by_mother: (m, d=1) ->
@@ -37,7 +37,6 @@ define ["lib/core/Constants", "lib/utils/Array_adds"], () ->
       @degree= d
 
     new_by_functs: (a) ->
-      console.log "new by functs"
       for k,v of MK.all_modes
         if _.uniq(a.concat(v)).length == v.length
           @new_by_name(k)

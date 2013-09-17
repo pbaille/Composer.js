@@ -11,9 +11,7 @@
     }
     MK = root.MK;
     return root.Degree = (function() {
-      var ALTERATIONS, DEFAULTS, NAME_DIST_MAP;
-
-      NAME_DIST_MAP = {
+      Degree.NAME_DIST_MAP = {
         "m2": 1,
         "M2": 2,
         "#2": 3,
@@ -35,7 +33,7 @@
         "M7": 11
       };
 
-      DEFAULTS = {
+      Degree.DEFAULTS = {
         "root": "C ",
         "second": "M2",
         "third": "M3",
@@ -45,7 +43,7 @@
         "seventh": "M7"
       };
 
-      ALTERATIONS = {
+      Degree.ALTERATIONS = {
         root: {
           0: "R"
         },
@@ -89,15 +87,15 @@
         if (!test) {
           this.generic_name = args[0];
           if (args.length === 2) {
-            this.name = ALTERATIONS[args[0]][args[1]];
+            this.name = root.Degree.ALTERATIONS[args[0]][args[1]];
           } else {
-            this.name = DEFAULTS[args[0]];
+            this.name = root.Degree.DEFAULTS[args[0]];
           }
         } else {
           this.name = args[0];
           this.generic_name = MK.ABSTRACT_DEGREES[Number(args[0][1]) - 1];
         }
-        this.dist = NAME_DIST_MAP[this.name];
+        this.dist = root.Degree.NAME_DIST_MAP[this.name];
       }
 
       Degree.prototype.alt = function(modifier) {
@@ -111,10 +109,11 @@
       };
 
       Degree.alt_map = function() {
-        var dam, index, k, v;
+        var dam, index, k, v, _ref;
         dam = {};
-        for (k in NAME_DIST_MAP) {
-          v = NAME_DIST_MAP[k];
+        _ref = root.Degree.NAME_DIST_MAP;
+        for (k in _ref) {
+          v = _ref[k];
           index = Number(k[1]) - 1;
           if (!dam[MK.ABSTRACT_DEGREES[index]]) {
             dam[MK.ABSTRACT_DEGREES[index]] = [];

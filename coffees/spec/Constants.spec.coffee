@@ -3,5 +3,5 @@ define ['lib/core/Constants'], () ->
   describe "MK class", ->
 
     it "return all modes", ->
-      console.log MK.all_modes
+      #console.log MK.all_modes
       expect(MK.all_modes["Alt"]).toEqual([0,1,3,4,6,8,10])

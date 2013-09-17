@@ -6,7 +6,8 @@ define [
   "lib/core/Degree"
   "lib/core/Constants"
   "lib/core/AbstractMode"
-
+  "lib/core/Mode"
+  "lib/core/Domain"
   ], () ->
 	console.log "core_loaded"
 
