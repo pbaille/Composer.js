@@ -1,40 +1,41 @@
 define ["vendors/ruby"], () ->
 
+  ############ RubyJS.Array adds (functional style) ##########
 
-  Array::rotate = ( () ->
+  _a.rotate = ( () ->
     unshift = Array::unshift
     splice = Array::splice
-    (count) ->
-      result = @slice(0) #copy
+    (arr,count) ->
+      result = arr.slice(0) #copy
       len = result.length >>> 0
       count = count >> 0
       unshift.apply result, splice.call(result, count % len, len)
       result
   )()
 
-  Array::rotations = ->
+  _a.rotations = (arr) ->
     result= []
-    for x in [0..@length-1]
-      result.push @rotate(x)
+    for x in [0..arr.length-1]
+      result.push _a.rotate(arr,x)
     _a.uniq(result)
 
-  Array::median = ->
-    @somme()/@length
+  _a.median = (arr) ->
+    _a.somme(arr)/arr.length
 
-  Array::somme = ->
-    @reduce (previousValue, currentValue) ->
+  _a.somme = (arr)->
+    arr.reduce (previousValue, currentValue) ->
       return previousValue + currentValue
 
-  Array::tonicize = ->
-    result = @map (x) => ((x - @[0] + 12 ) % 12)
+  _a.tonicize = (arr) ->
+    result = arr.map (x) => ((x - arr[0] + 12 ) % 12)
     _a.sort(result)
 
-  Array::tonicized_rotations= ->
-    @rotations().map (x) -> x.tonicize() 
+  _a.tonicized_rotations= (arr) ->
+    _a.rotations(arr).map (x) -> _a.tonicize(x) 
 
   # don't change self
-  Array::to_functs= ->
-    @map (i) -> if i then i % 12 else i  
+  _a.to_functs= (arr) ->
+    arr.map (i) -> if i then i % 12 else i  
 
 # Add the unique_permutation method to the Array class.
 # This is incredibly more efficient that the built in permutation method as duplicate elements will yield

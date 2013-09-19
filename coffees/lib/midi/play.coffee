@@ -16,7 +16,7 @@ define [], () ->
     for n in notes
 
       midiOut.send([channel , n.pitch.value, n.velocity], at) #on
-      midiOut.send([channel , n.pitch.value, 0], at + n.duration.toFloat() * 1000) #off
+      midiOut.send([channel , n.pitch.value, 0], at + n.duration.toFloat() * 1000 - 1) #off ### -1ms to avoid cross on/off on repeated pitches
       
     "play_end"
 

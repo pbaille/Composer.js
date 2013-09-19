@@ -122,7 +122,7 @@ define ["lib/utils/Rational", "vendors/ruby", "vendors/underscore"], ->
     result = {}
     mot = MK.MOTHERS[m]
     if mot
-      temp = _.zip(mot.degrees, mot.functs.tonicized_rotations())
+      temp = _.zip(mot.degrees, _a.tonicized_rotations(mot.functs))
       for x in temp
         result[x[0]] = x[1]
       return result	

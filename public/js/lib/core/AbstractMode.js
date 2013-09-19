@@ -58,7 +58,7 @@
         }
         mot = MK.MOTHERS[m];
         this.name = mot.degrees[d - 1];
-        this.functs = mot.functs.rotate(d - 1).tonicize();
+        this.functs = _a.tonicize(_a.rotate(mot.functs, d - 1));
         this.prio = mot.modes_prio[d - 1];
         this.mother = AbstractMode.Abs_moth(m, mot.functs);
         return this.degree = d;
@@ -84,7 +84,7 @@
       };
 
       AbstractMode.prototype.childs = function(m) {
-        return MK.MOTHERS[m].functs.tonicized_rotations();
+        return _a.tonicized_rotations(MK.MOTHERS[m].functs);
       };
 
       AbstractMode.prototype.moth_offset = function() {

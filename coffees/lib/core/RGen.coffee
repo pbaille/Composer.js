@@ -17,6 +17,13 @@ define ["lib/utils/Rational","lib/utils/Utils", "lib/core/Note", "lib/midi/play"
       @head_position = null #Rational
       @streamLen = opt.streamLen #Rational
 
+      ################# metronome attributes ######################
+      # will be initialized/refresh in bang function (on each metronome tic)
+      @origin = null
+      @bpm = null
+      @current_time= null
+      #############################################################
+
     add: (dur_occ_obj) ->
 
       unless dur_occ_obj.length
@@ -31,8 +38,7 @@ define ["lib/utils/Rational","lib/utils/Utils", "lib/core/Note", "lib/midi/play"
       @array = []
       @add dur_occ_objs if dur_occ_objs
 
-    reset_clock: () ->
-
+    reset_clock: ->
       @clock = rat(0,1)
 
     rvs_sync: (rvs_table) -> 
@@ -49,9 +55,59 @@ define ["lib/utils/Rational","lib/utils/Utils", "lib/core/Note", "lib/midi/play"
 
       for x in rem_indexes
         @array.splice(x,1) 
+    
+    #bang method called on each metronome tic
+    bang: (metronome) ->
+
+      ################# metronome sync ##########################
+      @bpm = metronome.bpm # should be remove and trigger on change_bpm's metronome's event
+      @current_time= metronome.total()
+      ###########################################################
+
+      #console.log @current_sub()
+
+      # generate if head advance is less than streamLen
+      if (@head_position.minus @current_time).lt(@streamLen)
+        @insertion_point= @head_position.dup()
+        @generate()
+
+    #triggered when metronoome started
+    start: (metronome) ->
+      @head_position = metronome.total()
+      @origin = metronome.origin_point
+
+    #triggered when metronoome stoped
+    stop: (metronome) ->
+      #@head_position = null
+         
+    ############################ Should be private ########################
+
+    generate: ->
+      results = []
+
+      while @head_position.minus(@current_time).lt(@streamLen)
+        results.push @next()
+
+      @melodize(results) if results
+
+    current_sub: ->
+      @head_position.denom
+
+    next: ->
+
+      #fill pioche in respect of each value occ
+      pioche = []
+      for x in @available_vals()
+        for i in [0..x.occ-1]
+          pioche.push x.value
+
+      #pick a random val in pioche and return it
+      pioche = _a.shuffle(pioche)
+      @head_position.add(pioche[0]) 
+      pioche[0]
 
     #craft an array of all possible denominators
-    denoms: () ->
+    denoms: ->
 
       results = [1] #insert 1 by default simplest subdiv
 
@@ -82,48 +138,7 @@ define ["lib/utils/Rational","lib/utils/Utils", "lib/core/Note", "lib/midi/play"
 
       results
 
-    #bang method called on each metronome tic
-    bang: (metronome) ->
-
-      #temp to displace
-      @origin = metronome.origin_point
-      @bpm = metronome.bpm
-      @current_time= metronome.total()
-
-      #init @head_position in sync with metronome
-      unless @head_position
-        @head_position = @current_time.dup()
-
-      #console.log @current_sub()
-
-      # generate if head advance is less than streamLen
-      if (@head_position.minus @current_time).lt(@streamLen)
-        @insertion_point= @head_position.dup()
-        @generate() 
-
-    generate: () ->
-      results = []
-
-      while @head_position.minus(@current_time).lt(@streamLen)
-        results.push @next()
-
-      @melodize(results) if results 
-
-
-    next: ->
-
-      #fill pioche in respect of each value occ
-      pioche = []
-      for x in @available_vals()
-        for i in [0..x.occ-1]
-          pioche.push x.value
-
-      #pick a random val in pioche and return it
-      pioche = _a.shuffle(pioche)
-      @head_position.add(pioche[0]) 
-      pioche[0]
-
-    available_vals: () ->
+    available_vals: ->
 
       results = []
       for x in @array
@@ -132,18 +147,19 @@ define ["lib/utils/Rational","lib/utils/Utils", "lib/core/Note", "lib/midi/play"
           cond1 = @denoms().indexOf(x.value.plus(@head_position).denom) >= 0
 
           #to avoid too much polyrythmn, TODO: turn it into a user param
-          cond2 = () =>
-            console.log "###################################"
-            console.log "cond2 " + @current_sub()
-            console.log "x= " + x.value.denom
+          cond2 = do =>
+            #console.log "###################################"
+            #console.log "cond2 " + @current_sub()
+            #console.log "x= " + x.value.denom
             if @current_sub() % 2 == 0 or @current_sub() == 1
-              console.log "bin"
+              #console.log "bin"
               true
             else
-              console.log "other " + _a.last(AC.Utils.factorise x.value.denom)
+              #console.log AC.Utils.factorise x.value.denom
+              #console.log "other " + _a.last(AC.Utils.factorise x.value.denom)
               _a.last(AC.Utils.factorise x.value.denom) == _a.last(AC.Utils.factorise @current_sub())
 
-          results.push x if cond1 and cond2()
+          results.push x if cond1 and cond2
 
       # head unable to resolve on an available subdivision, 
       # have to resolve it with non available value
@@ -154,7 +170,7 @@ define ["lib/utils/Rational","lib/utils/Utils", "lib/core/Note", "lib/midi/play"
 
     #called if no rythmn values available, 
     #it compute a value to resolve the head position on availables subdivisions
-    resolve_head: () ->
+    resolve_head: ->
       console.log "resolve head"
       sub = @current_sub()
       value = rat(0,1)
@@ -164,10 +180,10 @@ define ["lib/utils/Rational","lib/utils/Utils", "lib/core/Note", "lib/midi/play"
       console.log "head= " + @head_position
       {value: value, occ: 1} 
 
-    current_sub: () ->
-      @head_position.denom   
+     
 
-    #TEMP to ear results
+    ################# TEMP to ear results #############################
+
     melodize: (rythmic_line) ->
       line = []
       for duration in rythmic_line
@@ -185,7 +201,6 @@ define ["lib/utils/Rational","lib/utils/Utils", "lib/core/Note", "lib/midi/play"
         notes: line
         at: @origin + @insertion_point.times(rat(60, @bpm)).toFloat() * 1000
 
-    pause: () ->  
 
   # console.log "RGen test ################################"
 

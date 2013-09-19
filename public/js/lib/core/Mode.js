@@ -9,7 +9,7 @@
     }
     MK = root.MK;
     PitchClass = root.PitchClass;
-    AbstractMode = AC.Core.AbstractMode;
+    AbstractMode = root.AbstractMode;
     Degree = root.Degree;
     return root.Mode = (function() {
       Mode.Moth = function(root, name, functs) {
@@ -75,7 +75,7 @@
       };
 
       Mode.prototype.abstract_calc = function() {
-        return this.abstract = new AbstractMode(this.concrete.tonicize());
+        return this.abstract = new AbstractMode(_a.tonicize(this.concrete));
       };
 
       Mode.prototype.concrete_calc = function() {
@@ -223,10 +223,14 @@
       };
 
       Mode.prototype.clone = function() {
-        return Mode["new"]({
+        return new Mode({
           name: this.name,
           prio: this.prio
         });
+      };
+
+      Mode.prototype.mother_mode = function() {
+        return new Mode(this.mother.name);
       };
 
       return Mode;

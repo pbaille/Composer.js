@@ -13,7 +13,7 @@ define [
 
   MK= root.MK
   PitchClass = root.PitchClass
-  AbstractMode= AC.Core.AbstractMode
+  AbstractMode= root.AbstractMode
   Degree = root.Degree
 
   class root.Mode
@@ -68,7 +68,7 @@ define [
       @root= new PitchClass(@concrete[0])
 
     abstract_calc: ->
-      @abstract= new AbstractMode(@concrete.tonicize())
+      @abstract= new AbstractMode(_a.tonicize(@concrete))
 
     concrete_calc: ->
       r = @root
@@ -186,7 +186,12 @@ define [
       @abstract.degree
 
     clone: ->
-      Mode.new name: @name, prio: @prio
+      new Mode 
+        name: @name 
+        prio: @prio
+
+    mother_mode: ->
+      new Mode @mother.name
 
     # def partials arg=(2..6), include_root=true #Fixnum or Range, root boolean
 

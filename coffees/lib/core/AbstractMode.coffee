@@ -31,7 +31,7 @@ define ["lib/core/Constants", "lib/utils/Array_adds"], () ->
     new_by_mother: (m, d=1) ->
       mot = MK.MOTHERS[m]
       @name= mot.degrees[d-1]
-      @functs= mot.functs.rotate(d-1).tonicize()
+      @functs= _a.tonicize(_a.rotate(mot.functs,d-1))
       @prio= mot.modes_prio[d-1]
       @mother= AbstractMode.Abs_moth(m,mot.functs)
       @degree= d
@@ -52,7 +52,7 @@ define ["lib/core/Constants", "lib/utils/Array_adds"], () ->
 
 
     childs: (m) ->
-      MK.MOTHERS[m].functs.tonicized_rotations()
+      _a.tonicized_rotations(MK.MOTHERS[m].functs)
       
 
     moth_offset: () ->  

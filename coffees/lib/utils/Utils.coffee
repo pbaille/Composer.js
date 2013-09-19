@@ -6,6 +6,9 @@ define [], () ->
     root= window.AC.Utils 
 
   root.factorise = (numm) ->             # To calculate the prime factors of a number
+    
+    return [1] if numm is 1
+    
     newnum = numm                        # Initialise
     result = []
     checker = 2                          # First possible factor to check

@@ -121,7 +121,7 @@
       result = {};
       mot = MK.MOTHERS[m];
       if (mot) {
-        temp = _.zip(mot.degrees, mot.functs.tonicized_rotations());
+        temp = _.zip(mot.degrees, _a.tonicized_rotations(mot.functs));
         for (_i = 0, _len = temp.length; _i < _len; _i++) {
           x = temp[_i];
           result[x[0]] = x[1];

@@ -23,6 +23,9 @@
         this.array = opt.prob_array || [];
         this.head_position = null;
         this.streamLen = opt.streamLen;
+        this.origin = null;
+        this.bpm = null;
+        this.current_time = null;
       }
 
       RGen.prototype.add = function(dur_occ_obj) {
@@ -79,6 +82,52 @@
         return _results;
       };
 
+      RGen.prototype.bang = function(metronome) {
+        this.bpm = metronome.bpm;
+        this.current_time = metronome.total();
+        if ((this.head_position.minus(this.current_time)).lt(this.streamLen)) {
+          this.insertion_point = this.head_position.dup();
+          return this.generate();
+        }
+      };
+
+      RGen.prototype.start = function(metronome) {
+        this.head_position = metronome.total();
+        return this.origin = metronome.origin_point;
+      };
+
+      RGen.prototype.stop = function(metronome) {};
+
+      RGen.prototype.generate = function() {
+        var results;
+        results = [];
+        while (this.head_position.minus(this.current_time).lt(this.streamLen)) {
+          results.push(this.next());
+        }
+        if (results) {
+          return this.melodize(results);
+        }
+      };
+
+      RGen.prototype.current_sub = function() {
+        return this.head_position.denom;
+      };
+
+      RGen.prototype.next = function() {
+        var i, pioche, x, _i, _j, _len, _ref, _ref1;
+        pioche = [];
+        _ref = this.available_vals();
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          x = _ref[_i];
+          for (i = _j = 0, _ref1 = x.occ - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+            pioche.push(x.value);
+          }
+        }
+        pioche = _a.shuffle(pioche);
+        this.head_position.add(pioche[0]);
+        return pioche[0];
+      };
+
       RGen.prototype.denoms = function() {
         var results;
         results = [1];
@@ -120,45 +169,6 @@
         return results;
       };
 
-      RGen.prototype.bang = function(metronome) {
-        this.origin = metronome.origin_point;
-        this.bpm = metronome.bpm;
-        this.current_time = metronome.total();
-        if (!this.head_position) {
-          this.head_position = this.current_time.dup();
-        }
-        if ((this.head_position.minus(this.current_time)).lt(this.streamLen)) {
-          this.insertion_point = this.head_position.dup();
-          return this.generate();
-        }
-      };
-
-      RGen.prototype.generate = function() {
-        var results;
-        results = [];
-        while (this.head_position.minus(this.current_time).lt(this.streamLen)) {
-          results.push(this.next());
-        }
-        if (results) {
-          return this.melodize(results);
-        }
-      };
-
-      RGen.prototype.next = function() {
-        var i, pioche, x, _i, _j, _len, _ref, _ref1;
-        pioche = [];
-        _ref = this.available_vals();
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          x = _ref[_i];
-          for (i = _j = 0, _ref1 = x.occ - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-            pioche.push(x.value);
-          }
-        }
-        pioche = _a.shuffle(pioche);
-        this.head_position.add(pioche[0]);
-        return pioche[0];
-      };
-
       RGen.prototype.available_vals = function() {
         var cond1, cond2, results, x, _i, _len, _ref,
           _this = this;
@@ -168,19 +178,14 @@
           x = _ref[_i];
           if (x.occ !== 0) {
             cond1 = this.denoms().indexOf(x.value.plus(this.head_position).denom) >= 0;
-            cond2 = function() {
-              console.log("###################################");
-              console.log("cond2 " + _this.current_sub());
-              console.log("x= " + x.value.denom);
+            cond2 = (function() {
               if (_this.current_sub() % 2 === 0 || _this.current_sub() === 1) {
-                console.log("bin");
                 return true;
               } else {
-                console.log("other " + _a.last(AC.Utils.factorise(x.value.denom)));
                 return _a.last(AC.Utils.factorise(x.value.denom)) === _a.last(AC.Utils.factorise(_this.current_sub()));
               }
-            };
-            if (cond1 && cond2()) {
+            })();
+            if (cond1 && cond2) {
               results.push(x);
             }
           }
@@ -207,10 +212,6 @@
         };
       };
 
-      RGen.prototype.current_sub = function() {
-        return this.head_position.denom;
-      };
-
       RGen.prototype.melodize = function(rythmic_line) {
         var duration, line, n, pitch, vel, _i, _len;
         line = [];
@@ -230,8 +231,6 @@
           at: this.origin + this.insertion_point.times(rat(60, this.bpm)).toFloat() * 1000
         });
       };
-
-      RGen.prototype.pause = function() {};
 
       return RGen;
 

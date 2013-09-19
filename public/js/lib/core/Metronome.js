@@ -34,6 +34,7 @@
         _ref = this.listeners;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           l = _ref[_i];
+          l.start(this);
           l.bang(this);
         }
         instance = function() {
@@ -60,11 +61,19 @@
       };
 
       Metronome.prototype.stop = function() {
+        var l, _i, _len, _ref, _results;
         if (this.bpm) {
-          return this.is_on = false;
+          this.is_on = false;
         } else {
-          return console.log("this uncorrectly binded, please don't use #stop directly as callback");
+          console.log("this uncorrectly binded, please don't use #stop directly as callback");
         }
+        _ref = this.listeners;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          l = _ref[_i];
+          _results.push(l.stop());
+        }
+        return _results;
       };
 
       Metronome.prototype.total = function() {

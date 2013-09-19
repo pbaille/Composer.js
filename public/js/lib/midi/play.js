@@ -18,7 +18,7 @@
       for (_i = 0, _len = notes.length; _i < _len; _i++) {
         n = notes[_i];
         midiOut.send([channel, n.pitch.value, n.velocity], at);
-        midiOut.send([channel, n.pitch.value, 0], at + n.duration.toFloat() * 1000);
+        midiOut.send([channel, n.pitch.value, 0], at + n.duration.toFloat() * 1000 - 1);
       }
       return "play_end";
     };

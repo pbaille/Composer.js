@@ -16,13 +16,15 @@ define ["lib/utils/Rational","lib/utils/Utils", "vendors/ruby"], () ->
   else
     root= window.AC.Core
 
-  class root.RVal extends AC.Utils.Rational
+  Rational = AC.Utils.Rational  
+
+  class root.RVal extends Rational
   
-    constructor: (num, den) ->
+    constructor: (num, den = 1) ->
       super(num, den)
 
     to_ms: (bpm) ->
-      @times(new AC.Utils.Rational(60,bpm)).toFloat() * 1000 
+      @times(new Rational(60,bpm)).toFloat() * 1000 
 
     polyrythmic_base: ->
       _a.last(AC.Utils.factorise @denom)
@@ -30,9 +32,29 @@ define ["lib/utils/Rational","lib/utils/Utils", "vendors/ruby"], () ->
     binary_base: ->
       pb= @polyrythmic_base() 
       if pb == 2 
-        return pb 
+        return new Rational(1,@denom) 
       else
-        @denom / pb
+        return new Rational(@numer,@denom / pb)
+
+    multiplier: ->
+      @numer
+
+    show_bases: ->
+      console.log "poly: " + @polyrythmic_base() + " \nbinary: " + @binary_base() + " \nmultiplier: " + @multiplier()
+
+    # method from Rational
+    times: (rat)->
+      super(rat).toRVal()
+
+    div: (rat) ->
+      super(rat).toRVal()  
+
+    plus: (rat)->
+      super(rat).toRVal() 
+
+    minus: (rat)->
+      super(rat).toRVal()  
+
 
 
 

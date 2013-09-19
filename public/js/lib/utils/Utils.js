@@ -9,6 +9,9 @@
     }
     root.factorise = function(numm) {
       var checker, newnum, result;
+      if (numm === 1) {
+        return [1];
+      }
       newnum = numm;
       result = [];
       checker = 2;

@@ -5,6 +5,8 @@ define [], () ->
   else
     root= window.AC.Utils
 
+  # RVal = AC.Core.RVal  
+
   # the constructor
   class root.Rational
     constructor : (numerator, denominator) ->
@@ -25,7 +27,6 @@ define [], () ->
     denominator : ->
       @denom
     
-    
     # clone a rational
     dup : ->
       new AC.Utils.Rational(@numerator(), @denominator())
@@ -45,7 +46,9 @@ define [], () ->
     
     toInt : ->
       Math.floor @toFloat()
-    
+
+    toRVal: ->
+      new AC.Core.RVal @numer, @denom  
     
     # reduce 
     normalize : ->
@@ -109,8 +112,14 @@ define [], () ->
       i = 0
     
       while i < arguments.length
-        @numer = @numer * arguments[i].denominator() - @denom * arguments[i].numerator()
-        @denom = @denom * arguments[i].denominator()
+
+        if typeof arguments[i] == 'number'
+          rat = new AC.Utils.Rational(arguments[i],1)
+        else 
+          rat = arguments[i]
+
+        @numer = @numer * rat.denominator() - @denom * rat.numerator()
+        @denom = @denom * rat.denominator()
         i++
       @normalize()
     
@@ -124,7 +133,8 @@ define [], () ->
       rat = new AC.Utils.Rational(rat,1) unless rat.numer #convert integer to rational
       n = @numer * rat.numer
       d = @denom * rat.denom
-      new AC.Utils.Rational(n,d)      
+      new AC.Utils.Rational(n,d) 
+
     # variadic, modifies receiver
     multiply : ->
       i = 0
@@ -139,6 +149,9 @@ define [], () ->
     # modifies receiver
     divide : (rat) ->
       @multiply rat.inv()
+
+    div : (rat) ->
+      @times rat.inv()  
     
     
     # increment

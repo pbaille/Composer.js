@@ -1,11 +1,15 @@
-define ['lib/core/Rval'], () ->  
+define ['lib/utils/Rational','lib/core/Rval'], () ->  
+  
+  Rational= AC.Utils.Rational
+  RVal = AC.Core.RVal
 
   describe "Rval class", ->
 
     rv = {}
 
+
     beforeEach ->
-      rv = new AC.Core.RVal(1,2)
+      rv = new RVal(1,2)
 
     it "to_ms", ->
       expect(rv.to_ms(120)).toEqual(250)
@@ -16,8 +20,8 @@ define ['lib/core/Rval'], () ->
     describe "binary_base", ->
 
       it "with binary val", ->
-        expect(rv.binary_base()).toBe(2)  
+        expect(rv.binary_base()).toEqual(new Rational 1,2)  
   
       it "with polyrythmic val", ->
-        rv = new AC.Core.RVal(1,10)
-        expect(rv.binary_base()).toBe(2)    
+        rv = new RVal(1,10)
+        expect(rv.binary_base()).toEqual(new Rational 1,2)

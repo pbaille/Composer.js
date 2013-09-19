@@ -1,4 +1,4 @@
-define ['lib/utils/Array_adds'], () ->  
+define ['vendors/ruby','lib/utils/Array_adds'], () ->  
 
   describe "Array adds", ->
 
@@ -8,22 +8,22 @@ define ['lib/utils/Array_adds'], () ->
       a = [1,2,3]
 
     it "rotate", ->
-      expect(a.rotate(2)).toEqual([3,1,2])
+      expect(_a.rotate(a,2)).toEqual([3,1,2])
     
     it "rotations", ->
-      expect(a.rotations()).toEqual([[1,2,3],[2,3,1],[3,1,2]])
+      expect(_a.rotations(a)).toEqual([[1,2,3],[2,3,1],[3,1,2]])
 
     it "somme", ->
-      expect(a.somme()).toEqual(6)  
+      expect(_a.somme(a)).toEqual(6)  
 
     it "median", ->
-      expect(a.median()).toEqual(2)  
-      expect([1,2].median()).toEqual(1.5)
+      expect(_a.median(a)).toEqual(2)  
+      expect(_a.median([1,2])).toEqual(1.5)
 
     it "tonicize", ->
-      expect(a.tonicize()).toEqual([0,1,2])  
+      expect(_a.tonicize(a)).toEqual([0,1,2])  
 
     it "tonicized_rotations", ->
-      expect(a.tonicized_rotations()).toEqual([[0,1,2],[0,1,11],[0,10,11]])  
+      expect(_a.tonicized_rotations(a)).toEqual([[0,1,2],[0,1,11],[0,10,11]])  
 
       

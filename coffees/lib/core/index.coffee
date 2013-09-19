@@ -8,6 +8,7 @@ define [
   "lib/core/AbstractMode"
   "lib/core/Mode"
   "lib/core/Domain"
+  "lib/core/TimeLine"
   ], () ->
 	console.log "core_loaded"
 

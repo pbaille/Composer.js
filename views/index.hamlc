@@ -10,7 +10,7 @@
 
     %button(onclick="maestro.start();"
       play
-    %button(onclick="rythmnValSel.generator.pause();"
+    %button(onclick="maestro.stop();"
       pause  
     #tempo
       0

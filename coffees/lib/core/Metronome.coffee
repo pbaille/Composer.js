@@ -16,6 +16,7 @@
 #       setTimeout instance, (speed - diff)
   
 #   setTimeout instance, speed
+
 define [], () ->
 
   if typeof global != "undefined" && global != null 
@@ -49,6 +50,7 @@ define [], () ->
       @on_click(@beats , @unit , @count) if @on_click 
   
       for l in @listeners
+        l.start(@)
         l.bang(@)
     
       instance = () =>
@@ -60,6 +62,7 @@ define [], () ->
           @count = 0
         
         @on_click(@beats , @unit , @count) if @on_click 
+
         for l in @listeners
           l.bang(@)
   
@@ -74,9 +77,12 @@ define [], () ->
         @is_on = false
       else
         console.log "this uncorrectly binded, please don't use #stop directly as callback" 
+
+      for l in @listeners  
+        l.stop()
   
     total: () ->
-      rat(@count,@beats * @unit).plus(@bars).times(@beats)#.times(4)
+      rat(@count,@beats * @unit).plus(@bars).times(@beats)
 
     check_precision: () ->
       ( window.performance.now() - @origin_point ) - @total().times(rat(60,@bpm)).toFloat() * 1000 

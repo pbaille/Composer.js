@@ -53,6 +53,10 @@
         return Math.floor(this.toFloat());
       };
 
+      Rational.prototype.toRVal = function() {
+        return new AC.Core.RVal(this.numer, this.denom);
+      };
+
       Rational.prototype.normalize = function() {
         var a, b, tmp;
         a = Math.abs(this.numerator());
@@ -110,11 +114,16 @@
       };
 
       Rational.prototype.subtract = function() {
-        var i;
+        var i, rat;
         i = 0;
         while (i < arguments.length) {
-          this.numer = this.numer * arguments[i].denominator() - this.denom * arguments[i].numerator();
-          this.denom = this.denom * arguments[i].denominator();
+          if (typeof arguments[i] === 'number') {
+            rat = new AC.Utils.Rational(arguments[i], 1);
+          } else {
+            rat = arguments[i];
+          }
+          this.numer = this.numer * rat.denominator() - this.denom * rat.numerator();
+          this.denom = this.denom * rat.denominator();
           i++;
         }
         return this.normalize();
@@ -147,6 +156,10 @@
 
       Rational.prototype.divide = function(rat) {
         return this.multiply(rat.inv());
+      };
+
+      Rational.prototype.div = function(rat) {
+        return this.times(rat.inv());
       };
 
       Rational.prototype.inc = function() {
