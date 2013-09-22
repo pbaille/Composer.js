@@ -1,4 +1,4 @@
-define ["vendors/EventEmitter", "lib/core/RVal","lib/utils/Rational"], (EventEmitter)->
+define ["vendors/EventEmitter", "lib/core/RVal","lib/utils/Rational","lib/core/Position","lib/midi/play"], (EventEmitter)->
 
   if typeof global != "undefined" && global != null 
     root= global.AC.Core
@@ -7,38 +7,41 @@ define ["vendors/EventEmitter", "lib/core/RVal","lib/utils/Rational"], (EventEmi
 
   Rational = AC.Utils.Rational
   RVal = AC.Core.RVal
+  Position = AC.Core.Position
+  Note= AC.Core.Note
 
   window.ee = new EventEmitter 
 
   class root.TimeLine
 
-  	constructor: (opt) ->
-  	  @origin_point = null #window.performance.now() when started
-  	  @position =
-  	    cycle: 0 
-  	    bar: 0
-  	    sub: new RVal(0,1)
+    constructor: (opt) ->
+      @origin_point = null #window.performance.now() when started
+      @position = new Position
+        cycle: 0 
+        bar: 0
+        sub: new RVal(0,1)
+        timeline: @
 
-  	  @resolution = opt.resolution || new Rational(1,4) #tic every sixtenth note
+      @resolution = opt.resolution || new Rational(1,4) #tic every sixtenth note
 
-  	  @grid = opt.grid || [] #array of bars object
+      @grid = opt.grid || [] #array of bars object
 
-  	  @cycle = opt.cycle || false #does it loop or not
-  	  @is_on = false
+      @cycle = opt.cycle || false #does it loop or not
+      @is_on = false
 
-  	  @emitter = new EventEmitter
+      @emitter = new EventEmitter
 
-  	  #@rgen = opt.rgen
-  	  #@mgen = opt.mgen
-  	  #@hgen = opt.hgen
+      @rgen = opt.rgen
+      #@mgen = opt.mgen
+      #@hgen = opt.hgen
 
-  	  @on_tic = => #simple function that log time on every tic [opt.on_tic || ()]
-        console.log "#{ @position.bar + '>' + @position.sub.numer + '/' + @position.sub.denom  + ' mode: ' + @current_bar().h_dir_at(@position.sub).name}"
+      @on_tic = => #simple function that log time on every tic [opt.on_tic || ()]
+        console.log "#{ @position.bar + '>' + @position.sub.numer + '/' + @position.sub.denom  + ' mode: ' + @current_bar().h_dir_at(@position.sub).name }"
 
-  	  # add event listeners
-  	  @emitter.addListeners
-  	    tic: @on_tic #[@rgen.bang, @on_tic]
-  	    #start: @rgen.start
+      # add event listeners
+      @emitter.addListeners
+        tic: [@rgen.tic, @on_tic]
+        start: @rgen.start
 
 
       ########################################################
@@ -53,7 +56,7 @@ define ["vendors/EventEmitter", "lib/core/RVal","lib/utils/Rational"], (EventEmi
     start: (position) ->
 
       # if start position given then update @position
-      if position then @position = position else @position = {cycle: 0,bar: 0, sub: new RVal(0,1)}
+      if position then @position = position else @position = new Position {cycle: 0,bar: 0, sub: new RVal(0,1), timeline: @}
 
       @origin_point = window.performance.now()
       @is_on = true
@@ -61,8 +64,8 @@ define ["vendors/EventEmitter", "lib/core/RVal","lib/utils/Rational"], (EventEmi
       #init speed
       @speed = (60000 / @current_bar().bpm) * @current_bar().resolution.toFloat()
 
-      @emitter.trigger('start',@)
-      @emitter.trigger('tic',@) 
+      @emitter.trigger('start', [@] ) #pass to timeline object to listeners
+      @emitter.trigger('tic') 
     
       instance = () =>
 
@@ -78,7 +81,7 @@ define ["vendors/EventEmitter", "lib/core/RVal","lib/utils/Rational"], (EventEmi
           @speed = (60000 / @current_bar().bpm) * @current_bar().resolution.toFloat() #update speed in case of different bpm
           @position.sub = new RVal(0,1) #reset sub position
         
-        @emitter.trigger('tic',@) #emit tic event and send timeline object to listeners (maybe to heavy... try a subset if it is)
+        @emitter.trigger('tic')
   
         diff = @check_precision()
         setTimeout instance, (@speed - diff) if @is_on
@@ -95,38 +98,63 @@ define ["vendors/EventEmitter", "lib/core/RVal","lib/utils/Rational"], (EventEmi
 
       # for l in @listeners  
       #   l.stop()
-  
-    total: () ->
-      @position.sub.plus @position.bar
-
-    cycle_ms_duration: ->
-      result = 0
-      for b in @grid  
-      	result+= b.ms_duration()
-      return result
-
-    previous_cycles_duration: ->
-      @cycle_ms_duration() * @position.cycle
-
-    previous_bars_duration: ->
-      result = 0
-      return 0 if @position.bar == 0 
-      
-      for i in [0..@position.bar-1]
-        result+= @grid[i].ms_duration()
-        
-      return result 
 
     check_precision: () ->		
       real = window.performance.now() - @origin_point	     
-      computed = @previous_cycles_duration() + @previous_bars_duration() + @current_bar().ms_duration_at(@position.sub)
+      computed = @position.total_time()
       result = real - computed
       return result
+
+    # compute the duration in ms of a positioned rythmic value (RVal)
+    positioned_rval_to_ms: (pos,rval) ->  
+      return pos.rval_to_ms(rval)
 
     ########## helpers ###############
     
     current_bar: ->
       @grid[@position.bar]  
+
+    ########## PLAY ##################
+
+    # line => array of Note or [Note,Note,...](chord)
+    play_line: (line, midi_chan) ->  
+
+      line = [line] unless line instanceof Array # if single note wrap it
+
+      for n in line
+        if n instanceof Note
+          AC.MIDI.simple_play
+            channel: midi_chan || 1
+            pitch: n.pitch.value
+            velocity: n.velocity
+            duration: @positioned_rval_to_ms(n.position, n.duration)
+            at: n.position.to_performance_time()
+
+          # console.log "*********************************************"
+          # console.log n
+          # console.log "duration"
+          # console.log @positioned_rval_to_ms(n.position, n.duration) 
+          # console.log "position"
+          # console.log n.position.toString()
+          # console.log "perf_time"
+          # console.log n.position.to_performance_time() 
+          # console.log "*********************************************"
+
+             
+        #n must be a chord ([Note,Note,...])  
+        else
+          for cn in n
+            AC.MIDI.simple_play
+              channel: midi_chan || 1
+              pitch: cn.pitch.value
+              velocity: cn.velocity
+              duration: @positioned_rval_to_ms(cn.position, cn.duration)
+              at: cn.position.to_performance_time()
+             
+  
+
+
+
 
 
 

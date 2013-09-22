@@ -48,6 +48,51 @@ require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jq
       on_click: ->
         $('#tempo').html("#{@bars + '>' + @count}")
 
+
+    ##############################################################    
+    ##############################################################
+
+    RGen2 = AC.Core.RGen2
+    TimeLine = AC.Core.TimeLine
+    RVal = AC.Core.RVal
+    Mode = AC.Core.Mode
+    Bar = AC.Core.Bar
+
+    window.rgen2 = new RGen2
+      prob_array: [
+        {rval: new RVal(1), occ: 1}
+        {rval: new RVal(1,2), occ: 1}
+        # {rval: new RVal(3,8), occ: 3}
+        {rval: new RVal(1,3), occ: 1}
+        {rval: new RVal(1,6), occ: 1}
+      ]
+      advance: new RVal 2
+  
+  
+    window.tl = new TimeLine
+      grid: [
+        new Bar 
+          beats: 4
+          beat_val: new RVal 1
+          bpm: 60
+          resolution: new RVal 1,4
+          harmonic_directives: [
+            {at: new RVal(0), mode: new Mode("C Lyd")}
+            {at: new RVal(2), mode: new Mode("Eb Lyd")}
+          ]
+        # new Bar
+        #   beats: 4
+        #   beat_val: new RVal 1
+        #   bpm: 60
+        #   resolution: new RVal 1,4
+        #   harmonic_directives: [
+        #     {at: new RVal(0), mode: new Mode("B Lyd")}
+        #     {at: new RVal(2), mode: new Mode("Ab Lyd")}
+        #   ]
+      ]
+      cycle: true
+      rgen: rgen2    
+
     
 
 

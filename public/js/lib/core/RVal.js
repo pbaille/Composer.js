@@ -4,13 +4,14 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(["lib/utils/Rational", "lib/utils/Utils", "vendors/ruby"], function() {
-    var Rational, root;
+    var Rational, Utils, root;
     if (typeof global !== "undefined" && global !== null) {
       root = global.AC.Core;
     } else {
       root = window.AC.Core;
     }
     Rational = AC.Utils.Rational;
+    Utils = AC.Utils;
     return root.RVal = (function(_super) {
       __extends(RVal, _super);
 
@@ -26,7 +27,7 @@
       };
 
       RVal.prototype.polyrythmic_base = function() {
-        return _a.last(AC.Utils.factorise(this.denom));
+        return _a.last(Utils.factorise(this.denom));
       };
 
       RVal.prototype.binary_base = function() {
@@ -41,6 +42,22 @@
 
       RVal.prototype.multiplier = function() {
         return this.numer;
+      };
+
+      RVal.prototype.allowed_subs = function() {
+        var e, i, primes, results, subset, _i, _j, _len, _ref;
+        primes = Utils.factorise(this.denom);
+        results = [1];
+        for (i = _i = 1, _ref = primes.length; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
+          subset = _a.combination(primes, i);
+          for (_j = 0, _len = subset.length; _j < _len; _j++) {
+            e = subset[_j];
+            results.push(e.reduce(function(a, b) {
+              return a * b;
+            }));
+          }
+        }
+        return _a.uniq(results);
       };
 
       RVal.prototype.show_bases = function() {

@@ -1,12 +1,12 @@
-define ["lib/utils/Rational", "vendors/ruby"], () ->
+define ["lib/utils/Rational","lib/core/RVal","lib/core/Position", "vendors/ruby"], () ->
 
   if typeof global != "undefined" && global != null 
     root= global.AC.Core
   else
     root= window.AC.Core 
-  # RATIONAL shortcut
-  root.rat = (args...) ->
-    new AC.Utils.Rational args...
+
+  RVal = AC.Core.RVal
+  Position = AC.Core.Position
   
   #########################################################################
   class root.MetaPitch
@@ -60,42 +60,70 @@ define ["lib/utils/Rational", "vendors/ruby"], () ->
   
     constructor: (arg)->
   
-    	unless typeof arg == 'string'
-    	  arg = root.MetaPitch.find_closest arg
-  		
-    	mp= new root.MetaPitch(arg[0])
-    	if (arg.slice(1,3)) then alt= new root.Alteration(arg.slice(1,3)) else alt = new root.Alteration("n")
-    	@name = arg
-    	@int = mp.int + alt.int
+      unless typeof arg == 'string'
+        arg = root.MetaPitch.find_closest arg
+      
+      mp= new root.MetaPitch(arg[0])
+      if (arg.slice(1,3)) then alt= new root.Alteration(arg.slice(1,3)) else alt = new root.Alteration("n")
+      @name = arg
+      @int = mp.int + alt.int
   
   #########################################################################
-  class root.Pitch extends root.PitchClass
+  class root.Pitch
   
     constructor: (pitchClass, octave) ->
-  
-    	if typeof pitchClass == "string"
-    	  p = pitchClass.split(" ")
-    	  super p[0]
-    	  if p[1]
-    	    @octave = +p[1] 
-    	  else if octave
-    	    @octave = octave
-    	  else
-    	    @octave = 0 
-    	  @int = @int + (octave+5)*12  
-    	else
-    	  super pitchClass%12
-    	  @octave = octave || Math.floor pitchClass/12 - 5    
-  		  @value = pitchClass%12 + ( @octave + 5 ) * 12
+      
+      if typeof octave is 'number'
+        @octave = octave
+        @pitchClass = new root.PitchClass(pitchClass)
+
+      else if typeof pitchClass == "number"
+        @octave = Math.floor(pitchClass / 12) - 5
+        @pitchClass = new root.PitchClass(pitchClass % 12)
+
+      else if typeof pitchClass is "string"
+
+        # if unaltered pitch
+        if pitchClass.length == 1
+          @octave = 0
+          @pitchClass = new root.PitchClass(pitchClass) 
+
+        else if pitchClass.length == 2
+          # if unaltered pitch and octave
+          if typeof +pitchClass[1] is "number"
+            @octave = +pitchClass[1]
+            @pitchClass = new root.PitchClass pitchClass[0]
+
+        else if pitchClass.length == 3
+          #if unaltered pitch and negative octave
+          if pitchClass[1] is "-" and typeof +pitchClass[2] is "number" 
+            @pitchClass = new root.PitchClass pitchClass[0]
+            @octave= +pitchClass[2] * -1
+          #if altered pitch and positive octave
+          else
+            @pitchClass = new root.PitchClass pitchClass[0..1]
+            @octave = +pitchClass[2]
+
+        else if pitchClass.length == 4
+          #altered pitch and negative octave
+          @pitchClass = new root.PitchClass pitchClass[0..1]
+          @octave = +pitchClass[3] * -1
+
+        else
+          return "sorry, wrong arguments"  
+
+      @name = @pitchClass.name + @octave     
+      @value = @pitchClass.int + ( @octave + 5 ) * 12
+
+
 
   #########################################################################
-  class root.Note extends root.Pitch
-  
-    constructor: (pitch, vel = 60 , duration = 1, position = 0) ->
+  class root.Note 
+    constructor: (pitch, vel = 60 , duration, position) ->
       @pitch = new root.Pitch pitch
       @velocity = vel
-      @duration = duration
-      @position = position
+      @duration = duration || new RVal 1
+      @position = position || new Position()
   
   #########################################################################
   # return root

@@ -17,6 +17,7 @@ define ["lib/utils/Rational","lib/utils/Utils", "vendors/ruby"], () ->
     root= window.AC.Core
 
   Rational = AC.Utils.Rational  
+  Utils = AC.Utils
 
   class root.RVal extends Rational
   
@@ -27,7 +28,7 @@ define ["lib/utils/Rational","lib/utils/Utils", "vendors/ruby"], () ->
       @times(new Rational(60,bpm)).toFloat() * 1000 
 
     polyrythmic_base: ->
-      _a.last(AC.Utils.factorise @denom)
+      _a.last(Utils.factorise @denom)
 
     binary_base: ->
       pb= @polyrythmic_base() 
@@ -38,6 +39,17 @@ define ["lib/utils/Rational","lib/utils/Utils", "vendors/ruby"], () ->
 
     multiplier: ->
       @numer
+
+    #return array of allowed subs denominators (integers)
+    allowed_subs: ->
+      primes = Utils.factorise(@denom)
+      results = [1] #prefill with 1 since every rval is allowed on beat
+      for i in [1..primes.length]
+        subset = _a.combination(primes,i)
+        for e in subset
+          results.push e.reduce (a,b) -> a * b
+
+      return _a.uniq(results)  
 
     show_bases: ->
       console.log "poly: " + @polyrythmic_base() + " \nbinary: " + @binary_base() + " \nmultiplier: " + @multiplier()

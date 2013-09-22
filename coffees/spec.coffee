@@ -34,6 +34,7 @@ require ["jquery", "jasmine-html"], ($, jasmine) ->
   
   specs = [
     "spec/RVal.spec"
+    "spec/Note.spec"
     "spec/Degree.spec"
     "spec/Array_adds.spec"
     "spec/AbstractMode.spec"
@@ -43,6 +44,7 @@ require ["jquery", "jasmine-html"], ($, jasmine) ->
     "spec/HarmonicContext.spec"
     "spec/Bar.spec"
     "spec/TimeLine.spec"
+    "spec/RGen.spec"
 
   ]
 

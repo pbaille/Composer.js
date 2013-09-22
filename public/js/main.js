@@ -32,6 +32,7 @@
       return new AC.Utils.Rational(n, d);
     };
     return jQuery(function($) {
+      var Bar, Mode, RGen2, RVal, TimeLine;
       window.rgen = new AC.Core.RGen({
         streamLen: rat(2, 1)
       });
@@ -43,7 +44,7 @@
         },
         generator: rgen
       });
-      return window.maestro = new AC.Core.Metronome({
+      window.maestro = new AC.Core.Metronome({
         bpm: 100,
         beats: 5,
         unit: 4,
@@ -51,6 +52,50 @@
         on_click: function() {
           return $('#tempo').html("" + (this.bars + '>' + this.count));
         }
+      });
+      RGen2 = AC.Core.RGen2;
+      TimeLine = AC.Core.TimeLine;
+      RVal = AC.Core.RVal;
+      Mode = AC.Core.Mode;
+      Bar = AC.Core.Bar;
+      window.rgen2 = new RGen2({
+        prob_array: [
+          {
+            rval: new RVal(1),
+            occ: 1
+          }, {
+            rval: new RVal(1, 2),
+            occ: 1
+          }, {
+            rval: new RVal(1, 3),
+            occ: 1
+          }, {
+            rval: new RVal(1, 6),
+            occ: 1
+          }
+        ],
+        advance: new RVal(2)
+      });
+      return window.tl = new TimeLine({
+        grid: [
+          new Bar({
+            beats: 4,
+            beat_val: new RVal(1),
+            bpm: 60,
+            resolution: new RVal(1, 4),
+            harmonic_directives: [
+              {
+                at: new RVal(0),
+                mode: new Mode("C Lyd")
+              }, {
+                at: new RVal(2),
+                mode: new Mode("Eb Lyd")
+              }
+            ]
+          })
+        ],
+        cycle: true,
+        rgen: rgen2
       });
     });
   });

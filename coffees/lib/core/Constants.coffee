@@ -1,4 +1,4 @@
-define ["lib/utils/Rational", "vendors/ruby", "vendors/underscore"], ->
+define ["lib/utils/Rational","lib/Utils/Array_adds", "vendors/ruby", "vendors/underscore"], ->
   
   if typeof global != "undefined" && global != null 
     root= global.AC.Core
