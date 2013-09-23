@@ -1,4 +1,10 @@
-define ["vendors/EventEmitter", "lib/core/RVal","lib/utils/Rational","lib/core/Position","lib/midi/play"], (EventEmitter)->
+define [
+  "vendors/EventEmitter"
+  "lib/core/RVal"
+  "lib/utils/Rational"
+  "lib/core/Position"
+  "lib/midi/play"
+  ], (EventEmitter)->
 
   if typeof global != "undefined" && global != null 
     root= global.AC.Core
@@ -15,14 +21,16 @@ define ["vendors/EventEmitter", "lib/core/RVal","lib/utils/Rational","lib/core/P
   class root.TimeLine
 
     constructor: (opt) ->
+
       @origin_point = null #window.performance.now() when started
+
       @position = new Position
         cycle: 0 
         bar: 0
-        sub: new RVal(0,1)
+        sub: new RVal 0
         timeline: @
 
-      @resolution = opt.resolution || new Rational(1,4) #tic every sixtenth note
+      @resolution = opt.resolution || new Rational(1,4) #tic every sixtenth note by default
 
       @grid = opt.grid || [] #array of bars object
 
@@ -30,6 +38,8 @@ define ["vendors/EventEmitter", "lib/core/RVal","lib/utils/Rational","lib/core/P
       @is_on = false
 
       @emitter = new EventEmitter
+
+      #@tracks = opt.tracks || [] #array of track objects
 
       @rgen = opt.rgen
       #@mgen = opt.mgen
@@ -69,18 +79,24 @@ define ["vendors/EventEmitter", "lib/core/RVal","lib/utils/Rational","lib/core/P
     
       instance = () =>
 
-        @position.sub.add @current_bar().resolution
+        # @position.sub.add @current_bar().resolution
   
-        if @position.sub.eq @current_bar().duration()
-          @position.bar++
+        # if @position.sub.eq @current_bar().duration()
+        #   @position.bar++
 
-          if @cycle and @position.bar == @grid.length
-            @position.bar = 0 
-            @position.cycle++
+        #   if @cycle and @position.bar == @grid.length
+        #     @position.bar = 0 
+        #     @position.cycle++
 
-          @speed = (60000 / @current_bar().bpm) * @current_bar().resolution.toFloat() #update speed in case of different bpm
-          @position.sub = new RVal(0,1) #reset sub position
+        #   @speed = (60000 / @current_bar().bpm) * @current_bar().resolution.toFloat() #update speed in case of different bpm
+        #   @position.sub = new RVal(0,1) #reset sub position
         
+        prev_bar_index = @position.bar
+        @position = @position.plus @resolution
+
+        if prev_bar_index != @position.bar
+          @speed = (60000 / @current_bar().bpm) * @current_bar().resolution.toFloat()
+
         @emitter.trigger('tic')
   
         diff = @check_precision()

@@ -26,15 +26,20 @@
 
       Bar.prototype.ms_duration = function() {
         if (_a.empty(this.bpm_directives)) {
-          return this.duration().times(new RVal(60, this.bpm)) * 1000;
+          return this.duration().times(new RVal(60, this.bpm)).toFloat() * 1000;
         } else {
           return "not yet implemented";
         }
       };
 
       Bar.prototype.ms_duration_at = function(sub) {
+        var res;
         if (_a.empty(this.bpm_directives)) {
-          return sub.div(this.duration()).toFloat() * this.ms_duration();
+          if (sub.isZero()) {
+            return 0;
+          }
+          res = sub.div(this.duration()).toFloat() * this.ms_duration();
+          return res;
         } else {
           return "not yet implemented";
         }
@@ -54,11 +59,23 @@
         return result;
       };
 
-      Bar.prototype.r_dir_at = function(sub) {};
-
-      Bar.prototype.m_dir_at = function(sub) {};
+      Bar.prototype.m_dir_at = function(sub) {
+        var md, result, _i, _len, _ref;
+        result = {};
+        _ref = this.melodic_directives;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          md = _ref[_i];
+          if (md.at.gt(sub)) {
+            break;
+          }
+          result = md;
+        }
+        return result;
+      };
 
       Bar.prototype.bpm_dir_at = function(sub) {};
+
+      Bar.prototype.r_dir_at = function(sub) {};
 
       return Bar;
 

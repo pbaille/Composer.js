@@ -61,10 +61,10 @@ require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jq
     window.rgen2 = new RGen2
       prob_array: [
         {rval: new RVal(1), occ: 1}
-        {rval: new RVal(1,2), occ: 1}
+        # {rval: new RVal(1,2), occ: 1}
         # {rval: new RVal(3,8), occ: 3}
-        {rval: new RVal(1,3), occ: 1}
-        {rval: new RVal(1,6), occ: 1}
+        # {rval: new RVal(1,3), occ: 1}
+        # {rval: new RVal(1,6), occ: 1}
       ]
       advance: new RVal 2
   
@@ -80,72 +80,52 @@ require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jq
             {at: new RVal(0), mode: new Mode("C Lyd")}
             {at: new RVal(2), mode: new Mode("Eb Lyd")}
           ]
-        # new Bar
-        #   beats: 4
-        #   beat_val: new RVal 1
-        #   bpm: 60
-        #   resolution: new RVal 1,4
-        #   harmonic_directives: [
-        #     {at: new RVal(0), mode: new Mode("B Lyd")}
-        #     {at: new RVal(2), mode: new Mode("Ab Lyd")}
-        #   ]
+        new Bar
+          beats: 4
+          beat_val: new RVal 1
+          bpm: 90
+          resolution: new RVal 1,4
+          harmonic_directives: [
+            {at: new RVal(0), mode: new Mode("B Lyd")}
+            {at: new RVal(2), mode: new Mode("Ab Lyd")}
+          ]
       ]
       cycle: true
       rgen: rgen2    
 
-    
+  ##############################################################    
+  ##############################################################
 
+  #buggy need work !!!
+  RubyJS.Array.prototype.unique_permutation = (block) ->
+    #return _a.unique_permutation(arr) unless block
 
+    array_copy = @sort()
+    block array_copy.dup()
+    return if @size() < 2
 
-  # window.MM = my_midi
+    while true
+      # Based off of Algorithm L (Donald Knuth)
+      j = @size() - 2
 
-  # rgh = [
-  #   {value: rat(1,2), occ: 1}
-  #   {value: rat(1,4), occ: 1}
-  #   {value: rat(3,8), occ: 3}
-  #   {value: rat(1,3), occ: 1}
-  #   {value: rat(1,6), occ: 1}
-  # ]
+      j -= 1 while j > 0 and array_copy[j] >= array_copy[j+1]
 
-  # rg = new RGen(rgh)
-  
-  # rvals = rg.next(20)
+      if array_copy[j] < array_copy[j+1]
+        l = @size() - 1
 
-  # window.line = []
-  # for x in [0..20]
-  #   pitch = Math.floor(Math.random()*30 + 40)
-  #   vel = Math.floor(Math.random()*30 + 40)
-  #   dur = rvals[x]
+        l -= 1 while array_copy[j] >= array_copy[l] 
 
-  #   line.push [new Note(pitch, vel, dur), new Note(pitch + 5, vel, dur)]
+        temp = array_copy[j]
+        array_copy[j] = array_copy[l] 
+        array_copy[l] = temp
+        #array_copy[j+1..@size() -1] = array_copy[j+1..@size() -1].reverse()
+        rev = array_copy.reverse()
+        for e in [j+1..@size()-1]
+          array_copy[e] = rev[e]
 
-  # # my_midi.line
-  # #   notes: line   
-  
-  # r = rat(4,2)
-  # r.add(rat(1,3))
-  # puts r
+        block array_copy.dup()
 
-  # puts r
-  # window.n = new Note(48, 60 , r)
-  # puts n
-  
-  #console.log line  
-  # my_midi.play
-  #   note: n
-  
-  # rg.add [
-  #   { value: rat(1,4),occ: 2}
-  # ] 
-
-  # a = rg.denoms()
-  # console.log a
-
-  # rg.remove(rat(1,2))
-  # console.log rg
-
-  # puts "rvs"
-  # console.log RVS
-  # #RVS = rvs.RVS
+      else
+        break
   
       

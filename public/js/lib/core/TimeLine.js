@@ -19,7 +19,7 @@
         this.position = new Position({
           cycle: 0,
           bar: 0,
-          sub: new RVal(0, 1),
+          sub: new RVal(0),
           timeline: this
         });
         this.resolution = opt.resolution || new Rational(1, 4);
@@ -56,16 +56,11 @@
         this.emitter.trigger('start', [this]);
         this.emitter.trigger('tic');
         instance = function() {
-          var diff;
-          _this.position.sub.add(_this.current_bar().resolution);
-          if (_this.position.sub.eq(_this.current_bar().duration())) {
-            _this.position.bar++;
-            if (_this.cycle && _this.position.bar === _this.grid.length) {
-              _this.position.bar = 0;
-              _this.position.cycle++;
-            }
+          var diff, prev_bar_index;
+          prev_bar_index = _this.position.bar;
+          _this.position = _this.position.plus(_this.resolution);
+          if (prev_bar_index !== _this.position.bar) {
             _this.speed = (60000 / _this.current_bar().bpm) * _this.current_bar().resolution.toFloat();
-            _this.position.sub = new RVal(0, 1);
           }
           _this.emitter.trigger('tic');
           diff = _this.check_precision();

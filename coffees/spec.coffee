@@ -45,6 +45,8 @@ require ["jquery", "jasmine-html"], ($, jasmine) ->
     "spec/Bar.spec"
     "spec/TimeLine.spec"
     "spec/RGen.spec"
+    "spec/Position.spec"
+    "spec/MGen.spec"
 
   ]
 

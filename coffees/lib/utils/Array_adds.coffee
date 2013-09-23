@@ -1,17 +1,24 @@
 define ["vendors/ruby"], () ->
 
+
+  #wrap any object in an array if it is not an array
+  _a.wrap_if_not= (arr) ->
+    arr = [arr] unless arr instanceof Array 
+    return arr
+
   ############ RubyJS.Array adds (functional style) ##########
 
-  _a.rotate = ( () ->
-    unshift = Array::unshift
-    splice = Array::splice
-    (arr,count) ->
-      result = arr.slice(0) #copy
-      len = result.length >>> 0
-      count = count >> 0
-      unshift.apply result, splice.call(result, count % len, len)
-      result
-  )()
+  #already implemented in rubyjs , maybe remove it... but fear of a break
+  # _a.rotate = ( () ->
+  #   unshift = Array::unshift
+  #   splice = Array::splice
+  #   (arr,count) ->
+  #     result = arr.slice(0) #copy
+  #     len = result.length >>> 0
+  #     count = count >> 0
+  #     unshift.apply result, splice.call(result, count % len, len)
+  #     result
+  # )()
 
   _a.rotations = (arr) ->
     result= []
@@ -41,32 +48,31 @@ define ["vendors/ruby"], () ->
 # This is incredibly more efficient that the built in permutation method as duplicate elements will yield
 # identical permutations.
 
-  # def unique_permutation(&block)
-  #   return enum_for(:unique_permutation) unless block_given?
+  RubyJS.Array.unique_permutation = (block) ->
+    #return _a.unique_permutation(arr) unless block
 
-  #   array_copy = self.sort
-  #   yield array_copy.dup
-  #   return if size < 2
+    array_copy = @sort()
+    block.call array_copy.dup()
+    return if arr.length < 2
 
-  #   while true
-  #     # Based off of Algorithm L (Donald Knuth)
-  #     j = size - 2;
-  #     j -= 1 while j > 0 && array_copy[j] >= array_copy[j+1]
+    while true
+      # Based off of Algorithm L (Donald Knuth)
+      j = @length - 2;
+      j -= 1 while j > 0 && array_copy[j] >= array_copy[j+1]
 
-  #     if array_copy[j] < array_copy[j+1]
-  #       l = size - 1
-  #       l -= 1 while array_copy[j] >= array_copy[l] 
+      if array_copy[j] < array_copy[j+1]
+        l = @length - 1
+        l -= 1 while array_copy[j] >= array_copy[l] 
 
-  #       array_copy[j] , array_copy[l] = array_copy[l] , array_copy[j]
-  #       array_copy[j+1..-1] = array_copy[j+1..-1].reverse
+        array_copy[j] = array_copy[l] 
+        array_copy[l] = array_copy[j]
+        array_copy[j+1..-1] = _a.reverse(array_copy[j+1..-1])
 
-  #       yield array_copy.dup
+        block.call array_copy.dup()
 
-  #     else
-  #       break
-  #     end
-  #   end
-  # end
+      else
+        break
+
 
 #   def unique_permutation_no_rot
 #     results=[]

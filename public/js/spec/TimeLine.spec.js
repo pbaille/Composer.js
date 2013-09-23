@@ -66,70 +66,9 @@
         rgen: rgen2
       });
     };
-    describe("TimeLine Class", function() {
+    return describe("TimeLine Class", function() {
       return it("initialize", function() {
         return expect(init_tl()).toBeTruthy();
-      });
-    });
-    return describe("Position class", function() {
-      it("plus", function() {
-        init_tl();
-        expect(tl.position.plus(new RVal(1, 2))).toEqual(new Position({
-          timeline: tl,
-          cycle: 0,
-          bar: 0,
-          sub: new RVal(1, 2)
-        }));
-        expect(tl.position.plus(new RVal(5, 1))).toEqual(new Position({
-          timeline: tl,
-          cycle: 0,
-          bar: 1,
-          sub: new RVal(1)
-        }));
-        expect(tl.position.plus(new RVal(11, 2))).toEqual(new Position({
-          timeline: tl,
-          cycle: 0,
-          bar: 1,
-          sub: new RVal(3, 2)
-        }));
-        expect(tl.position.plus(new RVal(10))).toEqual(new Position({
-          timeline: tl,
-          cycle: 1,
-          bar: 0,
-          sub: new RVal(2)
-        }));
-        expect(tl.position.plus(new RVal(4))).toEqual(new Position({
-          timeline: tl,
-          cycle: 0,
-          bar: 1,
-          sub: new RVal(0)
-        }));
-        tl.position = new Position({
-          timeline: tl,
-          cycle: 0,
-          bar: 0,
-          sub: new RVal(7, 2)
-        });
-        console.log(tl.position.plus(new RVal(1, 2)));
-        return expect(tl.position.plus(new RVal(1, 2))).toEqual(new Position({
-          timeline: tl,
-          cycle: 0,
-          bar: 1,
-          sub: new RVal(0)
-        }));
-      });
-      return it("rval_to_ms", function() {
-        init_tl();
-        expect(tl.position.rval_to_ms(new RVal(1, 2))).toEqual(250);
-        expect(tl.position.rval_to_ms(new RVal(9, 2))).toEqual(2500);
-        expect(tl.position.rval_to_ms(new RVal(21, 2))).toEqual(7250);
-        tl.position = new Position({
-          timeline: tl,
-          cycle: 1,
-          bar: 1,
-          sub: new RVal(7, 2)
-        });
-        return expect(tl.position.rval_to_ms(new RVal(1, 2))).toEqual(500);
       });
     });
   });

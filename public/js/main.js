@@ -31,7 +31,7 @@
     window.rat = function(n, d) {
       return new AC.Utils.Rational(n, d);
     };
-    return jQuery(function($) {
+    jQuery(function($) {
       var Bar, Mode, RGen2, RVal, TimeLine;
       window.rgen = new AC.Core.RGen({
         streamLen: rat(2, 1)
@@ -63,15 +63,6 @@
           {
             rval: new RVal(1),
             occ: 1
-          }, {
-            rval: new RVal(1, 2),
-            occ: 1
-          }, {
-            rval: new RVal(1, 3),
-            occ: 1
-          }, {
-            rval: new RVal(1, 6),
-            occ: 1
           }
         ],
         advance: new RVal(2)
@@ -92,12 +83,58 @@
                 mode: new Mode("Eb Lyd")
               }
             ]
+          }), new Bar({
+            beats: 4,
+            beat_val: new RVal(1),
+            bpm: 90,
+            resolution: new RVal(1, 4),
+            harmonic_directives: [
+              {
+                at: new RVal(0),
+                mode: new Mode("B Lyd")
+              }, {
+                at: new RVal(2),
+                mode: new Mode("Ab Lyd")
+              }
+            ]
           })
         ],
         cycle: true,
         rgen: rgen2
       });
     });
+    return RubyJS.Array.prototype.unique_permutation = function(block) {
+      var array_copy, e, j, l, rev, temp, _i, _ref, _ref1, _results;
+      array_copy = this.sort();
+      block(array_copy.dup());
+      if (this.size() < 2) {
+        return;
+      }
+      _results = [];
+      while (true) {
+        j = this.size() - 2;
+        while (j > 0 && array_copy[j] >= array_copy[j + 1]) {
+          j -= 1;
+        }
+        if (array_copy[j] < array_copy[j + 1]) {
+          l = this.size() - 1;
+          while (array_copy[j] >= array_copy[l]) {
+            l -= 1;
+          }
+          temp = array_copy[j];
+          array_copy[j] = array_copy[l];
+          array_copy[l] = temp;
+          rev = array_copy.reverse();
+          for (e = _i = _ref = j + 1, _ref1 = this.size() - 1; _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; e = _ref <= _ref1 ? ++_i : --_i) {
+            array_copy[e] = rev[e];
+          }
+          _results.push(block(array_copy.dup()));
+        } else {
+          break;
+        }
+      }
+      return _results;
+    };
   });
 
 }).call(this);

@@ -1,0 +1,6 @@
+Dev notes
+
+-Timeline object should unique and in the AC namespace, so each other object can access it without a property that reference it
+-Bar(s) can be appended to it via #append method or simply by push them to timeline.grid attribute
+-it can be configured via #config method
+-all bar's directives should be wrapped in a timeline attribute array called "directives" sort by position, in order that the timer can apply directives to repected generators in time without to check every single directive position, once a directive is applied it is send to the last index of the array

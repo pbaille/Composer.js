@@ -47,7 +47,7 @@
       };
 
       Position.prototype.total_time = function() {
-        return this.previous_cycles_duration() + this.previous_bars_duration() + this.timeline.current_bar().ms_duration_at(this.sub);
+        return this.previous_cycles_duration() + this.previous_bars_duration() + this.timeline.grid[this.bar].ms_duration_at(this.sub);
       };
 
       Position.prototype.plus = function(rval) {
@@ -87,6 +87,7 @@
             return temp;
           }
           _result += clone.timeline.grid[clone.bar].ms_duration();
+          clone.sub = new RVal(0);
           if (clone.bar === clone.timeline.grid.length - 1) {
             clone.cycle++;
             clone.bar = 0;

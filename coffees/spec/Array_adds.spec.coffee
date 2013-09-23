@@ -7,6 +7,10 @@ define ['vendors/ruby','lib/utils/Array_adds'], () ->
     beforeEach ->
       a = [1,2,3]
 
+    it "wrap_if_not", ->
+      expect(_a.wrap_if_not(5)).toEqual([5])  
+      expect(_a.wrap_if_not(a)).toEqual([1,2,3])  
+
     it "rotate", ->
       expect(_a.rotate(a,2)).toEqual([3,1,2])
     

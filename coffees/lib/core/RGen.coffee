@@ -231,13 +231,6 @@ define ["lib/utils/Rational","lib/core/RVal","lib/utils/Utils", "lib/core/Note",
       @ahead = new Rational 0
       @timeline = opt.timeline || {} #for testing purpose #will be initialize on 'start' event
 
-      ################# metronome attributes ######################
-      # will be initialized/refresh in bang function (on each metronome tic)
-      # @origin = null
-      # @bpm = null
-      # @current_time= null
-      #############################################################
-
     add: (dur_occ_obj) ->
 
       unless dur_occ_obj.length
@@ -278,10 +271,6 @@ define ["lib/utils/Rational","lib/core/RVal","lib/utils/Utils", "lib/core/Note",
 
     #triggered when metronoome started
     start: (timeline) =>
-      # console.log "start timeline arg"
-      # console.log timeline
-      # console.log @
-
       @timeline = timeline
 
     #triggered when metronoome stoped

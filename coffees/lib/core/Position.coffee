@@ -34,9 +34,9 @@ define ["lib/core/RVal"], ->
 
       return result 
 
-    total_time: ->
-      @previous_cycles_duration() + @previous_bars_duration() + @timeline.current_bar().ms_duration_at(@sub)  
-
+    total_time: ->  
+      @previous_cycles_duration() + @previous_bars_duration() + @timeline.grid[@bar].ms_duration_at(@sub)  
+      
     # doesn't modify caller
     plus: (rval) ->
 
@@ -84,6 +84,7 @@ define ["lib/core/RVal"], ->
         return temp if diff.isZero()
 
         _result += clone.timeline.grid[clone.bar].ms_duration()
+        clone.sub = new RVal 0
         if clone.bar == clone.timeline.grid.length - 1
           clone.cycle++
           clone.bar = 0
