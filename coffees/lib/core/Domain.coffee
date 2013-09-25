@@ -25,5 +25,11 @@ define ["lib/core/Mode"], ->
   	  @bounds[0]= down  
 
   	pitches_values: ->
-  	  @pitches.map (x) -> x.value  
+  	  @pitches.map (x) -> x.value 
+
+    set_mode: (m) ->
+      if m instanceof Mode
+        @mode = m
+      else
+        @mode = new Mode m     
 

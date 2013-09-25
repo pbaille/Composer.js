@@ -24,108 +24,119 @@ require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jq
     new AC.Utils.Rational(n,d)
 
   jQuery ($) ->
-
-    window.rgen = new AC.Core.RGen
-      streamLen: rat(2,1)
-
-    window.rythmnValSel = new AC.GUI.RVS 
-      el: "#rvs"
-      table:
-        # 2:1
-        4:1
-        10:1
-        # 8:3
-        # 3:1
-        # 6:1
-        #24:1
-      generator: rgen
-
-    window.maestro = new AC.Core.Metronome
-      bpm: 100
-      beats: 5
-      unit: 4
-      listeners: [rgen]
-      on_click: ->
-        $('#tempo').html("#{@bars + '>' + @count}")
-
-
-    ##############################################################    
-    ##############################################################
-
-    RGen2 = AC.Core.RGen2
+    
+    RGen = AC.Core.RGen
     TimeLine = AC.Core.TimeLine
     RVal = AC.Core.RVal
     Mode = AC.Core.Mode
     Bar = AC.Core.Bar
-
-    window.rgen2 = new RGen2
-      prob_array: [
-        {rval: new RVal(1), occ: 1}
-        # {rval: new RVal(1,2), occ: 1}
-        # {rval: new RVal(3,8), occ: 3}
-        # {rval: new RVal(1,3), occ: 1}
-        # {rval: new RVal(1,6), occ: 1}
-      ]
-      advance: new RVal 2
+    Track = AC.Core.Track
+    Directive = AC.Core.Directive
+    Position = AC.Core.Position
   
-  
-    window.tl = new TimeLine
-      grid: [
-        new Bar 
-          beats: 4
-          beat_val: new RVal 1
-          bpm: 60
-          resolution: new RVal 1,4
-          harmonic_directives: [
-            {at: new RVal(0), mode: new Mode("C Lyd")}
-            {at: new RVal(2), mode: new Mode("Eb Lyd")}
-          ]
-        new Bar
-          beats: 4
-          beat_val: new RVal 1
-          bpm: 90
-          resolution: new RVal 1,4
-          harmonic_directives: [
-            {at: new RVal(0), mode: new Mode("B Lyd")}
-            {at: new RVal(2), mode: new Mode("Ab Lyd")}
-          ]
-      ]
+    window.timeline = new TimeLine
       cycle: true
-      rgen: rgen2    
 
-  ##############################################################    
-  ##############################################################
+    bar = new Bar 
+      beats: 4
+      beat_val: new RVal 1
+      bpm: 60
+      resolution: new RVal 1,4
 
-  #buggy need work !!!
-  RubyJS.Array.prototype.unique_permutation = (block) ->
-    #return _a.unique_permutation(arr) unless block
+    timeline.insert_bar bar,0,2 #insert 4 * bar at index 0
 
-    array_copy = @sort()
-    block array_copy.dup()
-    return if @size() < 2
+    track1 = new Track
+      midi_channel: 1
+      directives: [ 
 
-    while true
-      # Based off of Algorithm L (Donald Knuth)
-      j = @size() - 2
+        new Directive
+          position: new Position {cycle: 0, bar: 0, sub: new RVal 0}
+          type: "rythmic"
+          method_name: "set_prob_array"
+          args:[ 
+            [# [ {rval: new RVal(1)  , occ: 1 }
+            #   {rval: new RVal(1,2), occ: 1 }
+              {rval: new RVal(1,6), occ: 1 }
+              {rval: new RVal(1,8), occ: 1 }
+            ]
+          ]
 
-      j -= 1 while j > 0 and array_copy[j] >= array_copy[j+1]
+        #first bar (timeline.grid[0]) default to C Lyd
+        new Directive
+          position: new Position {cycle: 0, bar: 0, sub: new RVal 0}
+          type: "harmonic"
+          method_name: "abs_move"
+          args: ["T",1] #SD mode 1st degree (ex: in C Lyd => F Lyd)
 
-      if array_copy[j] < array_copy[j+1]
-        l = @size() - 1
+        new Directive
+          position: new Position {cycle: 0, bar: 1, sub: new RVal 0}
+          type: "harmonic"
+          method_name: "abs_move"
+          args: ["SD-",1] #SD mode 1st degree (ex: in C Lyd => F Lyd)
 
-        l -= 1 while array_copy[j] >= array_copy[l] 
+        # new Directive
+        #   position: new Position {cycle: 0, bar: 2, sub: new RVal 0}
+        #   type: "harmonic"
+        #   method_name: "abs_move"
+        #   args: ["T-",1]
 
-        temp = array_copy[j]
-        array_copy[j] = array_copy[l] 
-        array_copy[l] = temp
-        #array_copy[j+1..@size() -1] = array_copy[j+1..@size() -1].reverse()
-        rev = array_copy.reverse()
-        for e in [j+1..@size()-1]
-          array_copy[e] = rev[e]
+        # new Directive
+        #   position: new Position {cycle: 0, bar: 3, sub: new RVal 0}
+        #   type: "harmonic"
+        #   method_name: "abs_move"
+        #   args: ["SDalt",1] 
+      ]
 
-        block array_copy.dup()
+    timeline.tracks.push track1 
 
-      else
-        break
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ### UI RT Version ###
+
+  # window.rgen = new AC.Core.RGen
+  #     streamLen: rat(2,1)
+
+  #   window.rythmnValSel = new AC.GUI.RVS 
+  #     el: "#rvs"
+  #     table:
+  #       # 2:1
+  #       4:1
+  #       10:1
+  #       # 8:3
+  #       # 3:1
+  #       # 6:1
+  #       #24:1
+  #     generator: rgen
+
+  #   window.maestro = new AC.Core.Metronome
+  #     bpm: 100
+  #     beats: 5
+  #     unit: 4
+  #     listeners: [rgen]
+  #     on_click: ->
+  #       $('#tempo').html("#{@bars + '>' + @count}")
+
+
+    ##############################################################    
+    ##############################################################
+  
   
       

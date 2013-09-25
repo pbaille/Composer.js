@@ -34,10 +34,10 @@ define ["lib/core/Bar", "lib/core/RVal", "lib/core/Mode"], ->
   	  b = create_instance()
   	  expect(b.ms_duration_at(new RVal 2)).toEqual(1000)  
 
-  	it "h_dir_at", ->
-  	  b = create_instance()
-  	  expect(b.h_dir_at(new RVal 3,4)).toEqual(new Mode "C Lyd")  
-  	  expect(b.h_dir_at(new RVal 2)).toEqual(new Mode "Eb Lyd")  
+  	# it "h_dir_at", ->
+  	#   b = create_instance()
+  	#   expect(b.h_dir_at(new RVal 3,4)).toEqual(new Mode "C Lyd")  
+  	#   expect(b.h_dir_at(new RVal 2)).toEqual(new Mode "Eb Lyd")  
 
 
 

@@ -16,13 +16,12 @@
         this.cycle = opt.cycle || 0;
         this.bar = opt.bar || 0;
         this.sub = opt.sub || new RVal(0);
-        this.timeline = opt.timeline || null;
       }
 
       Position.prototype.cycle_ms_duration = function() {
         var b, result, _i, _len, _ref;
         result = 0;
-        _ref = this.timeline.grid;
+        _ref = timeline.grid;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           b = _ref[_i];
           result += b.ms_duration();
@@ -41,26 +40,26 @@
           return 0;
         }
         for (i = _i = 0, _ref = this.bar - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-          result += this.timeline.grid[i].ms_duration();
+          result += timeline.grid[i].ms_duration();
         }
         return result;
       };
 
       Position.prototype.total_time = function() {
-        return this.previous_cycles_duration() + this.previous_bars_duration() + this.timeline.grid[this.bar].ms_duration_at(this.sub);
+        return this.previous_cycles_duration() + this.previous_bars_duration() + timeline.grid[this.bar].ms_duration_at(this.sub);
       };
 
       Position.prototype.plus = function(rval) {
         var addition, clone, diff;
         clone = this.clone();
         addition = clone.sub.plus(rval);
-        diff = addition.minus(clone.timeline.grid[clone.bar].duration());
+        diff = addition.minus(timeline.grid[clone.bar].duration());
         if (diff.isNegative()) {
           clone.sub = addition;
           return clone;
         } else {
           clone.sub = new RVal(0);
-          if (clone.bar === clone.timeline.grid.length - 1) {
+          if (clone.bar === timeline.grid.length - 1) {
             clone.cycle++;
             clone.bar = 0;
           } else {
@@ -74,21 +73,21 @@
         var addition, clone, diff, temp;
         clone = this.clone();
         if (_result === void 0) {
-          _result = clone.timeline.grid[clone.bar].ms_duration_at(clone.sub) * -1;
+          _result = timeline.grid[clone.bar].ms_duration_at(clone.sub) * -1;
         }
         addition = clone.sub.plus(rval);
-        diff = addition.minus(clone.timeline.grid[clone.bar].duration());
+        diff = addition.minus(timeline.grid[clone.bar].duration());
         if (diff.isNegative()) {
           clone.sub = addition;
-          return _result + clone.timeline.grid[clone.bar].ms_duration_at(clone.sub);
+          return _result + timeline.grid[clone.bar].ms_duration_at(clone.sub);
         } else {
-          temp = _result + clone.timeline.grid[clone.bar].ms_duration();
+          temp = _result + timeline.grid[clone.bar].ms_duration();
           if (diff.isZero()) {
             return temp;
           }
-          _result += clone.timeline.grid[clone.bar].ms_duration();
+          _result += timeline.grid[clone.bar].ms_duration();
           clone.sub = new RVal(0);
-          if (clone.bar === clone.timeline.grid.length - 1) {
+          if (clone.bar === timeline.grid.length - 1) {
             clone.cycle++;
             clone.bar = 0;
           } else {
@@ -103,20 +102,61 @@
       };
 
       Position.prototype.to_performance_time = function() {
-        return this.timeline.origin_point + this.total_time();
+        return timeline.origin_point + this.total_time();
       };
 
       Position.prototype.clone = function() {
         return new root.Position({
           cycle: this.cycle,
           bar: this.bar,
-          sub: this.sub,
-          timeline: this.timeline
+          sub: this.sub
         });
       };
 
       Position.prototype.toString = function() {
         return "#cycle: " + this.cycle + " // bar: " + this.bar + " // sub: " + (this.sub.numer + '/' + this.sub.denom);
+      };
+
+      Position.prototype.eq = function(pos) {
+        if (this.cycle === pos.cycle && this.bar === pos.bar && this.sub.eq(pos.sub)) {
+          return true;
+        }
+        return false;
+      };
+
+      Position.prototype.le = function(pos) {
+        if (this.eq(pos)) {
+          return true;
+        }
+        return this.lt(pos);
+      };
+
+      Position.prototype.ge = function(pos) {
+        return !this.lt(pos);
+      };
+
+      Position.prototype.lt = function(pos) {
+        if (this.cycle < pos.cycle) {
+          return true;
+        } else if (this.cycle > pos.cycle) {
+          return false;
+        }
+        if (this.bar < pos.bar) {
+          return true;
+        } else if (this.bar > pos.bar) {
+          return false;
+        }
+        if (this.sub.lt(pos.sub)) {
+          return true;
+        } else if (this.sub.gt(pos.sub)) {
+          return false;
+        } else {
+          return false;
+        }
+      };
+
+      Position.prototype.gt = function(pos) {
+        return !this.le(pos);
       };
 
       return Position;

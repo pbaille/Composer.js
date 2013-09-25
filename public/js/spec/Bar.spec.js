@@ -40,16 +40,10 @@
         b = create_instance();
         return expect(b.ms_duration()).toEqual(2000);
       });
-      it("ms_duration_at", function() {
+      return it("ms_duration_at", function() {
         var b;
         b = create_instance();
         return expect(b.ms_duration_at(new RVal(2))).toEqual(1000);
-      });
-      return it("h_dir_at", function() {
-        var b;
-        b = create_instance();
-        expect(b.h_dir_at(new RVal(3, 4))).toEqual(new Mode("C Lyd"));
-        return expect(b.h_dir_at(new RVal(2))).toEqual(new Mode("Eb Lyd"));
       });
     });
   });

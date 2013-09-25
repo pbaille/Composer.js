@@ -14,11 +14,10 @@ define ["lib/core/RVal"], ->
       @cycle= opt.cycle || 0
       @bar= opt.bar || 0
       @sub= opt.sub || new RVal 0
-      @timeline = opt.timeline || null
 
     cycle_ms_duration: ->
       result = 0
-      for b in @timeline.grid  
+      for b in timeline.grid  
       	result+= b.ms_duration()
       return result
 
@@ -30,20 +29,20 @@ define ["lib/core/RVal"], ->
       return 0 if @bar == 0 
       
       for i in [0..@bar-1]
-        result+= @timeline.grid[i].ms_duration()
+        result+= timeline.grid[i].ms_duration()
 
       return result 
 
     total_time: ->  
-      @previous_cycles_duration() + @previous_bars_duration() + @timeline.grid[@bar].ms_duration_at(@sub)  
-      
+      @previous_cycles_duration() + @previous_bars_duration() + timeline.grid[@bar].ms_duration_at(@sub)  
+
     # doesn't modify caller
     plus: (rval) ->
 
       clone = @clone() # at start
 
       addition = clone.sub.plus rval
-      diff = addition.minus clone.timeline.grid[clone.bar].duration()
+      diff = addition.minus timeline.grid[clone.bar].duration()
 
       # if no need to increment bar
       if diff.isNegative()
@@ -52,7 +51,7 @@ define ["lib/core/RVal"], ->
       else 
         # if last bar of timeline.grid
         clone.sub = new RVal 0
-        if clone.bar == clone.timeline.grid.length - 1
+        if clone.bar == timeline.grid.length - 1
           clone.cycle++
           clone.bar = 0
         else  
@@ -70,22 +69,22 @@ define ["lib/core/RVal"], ->
 
       # clever explanation
       if _result is undefined
-        _result = clone.timeline.grid[clone.bar].ms_duration_at(clone.sub) * -1
+        _result = timeline.grid[clone.bar].ms_duration_at(clone.sub) * -1
 
       addition = clone.sub.plus rval
-      diff = addition.minus clone.timeline.grid[clone.bar].duration()
+      diff = addition.minus timeline.grid[clone.bar].duration()
 
       # if no need to increment bar
       if diff.isNegative() #le new RVal 0
         clone.sub = addition
-        return _result + clone.timeline.grid[clone.bar].ms_duration_at(clone.sub) 
+        return _result + timeline.grid[clone.bar].ms_duration_at(clone.sub) 
       else 
-        temp = _result + clone.timeline.grid[clone.bar].ms_duration()
+        temp = _result + timeline.grid[clone.bar].ms_duration()
         return temp if diff.isZero()
 
-        _result += clone.timeline.grid[clone.bar].ms_duration()
+        _result += timeline.grid[clone.bar].ms_duration()
         clone.sub = new RVal 0
-        if clone.bar == clone.timeline.grid.length - 1
+        if clone.bar == timeline.grid.length - 1
           clone.cycle++
           clone.bar = 0
         else  
@@ -102,17 +101,50 @@ define ["lib/core/RVal"], ->
       "TODO !!!!!!!!"
 
     to_performance_time: () ->
-      @timeline.origin_point + @total_time()
+      timeline.origin_point + @total_time()
 
     clone: ->
       new root.Position
         cycle: @cycle
         bar: @bar
         sub: @sub 
-        timeline: @timeline  
 
     toString: ->
       "#cycle: #{@cycle} // bar: #{@bar} // sub: #{@sub.numer + '/' + @sub.denom}"     
 
     # distance: (position) ->
+
+    eq: (pos) ->
+      return true if @cycle == pos.cycle and @bar == pos.bar and @sub.eq(pos.sub)
+      return false
+
+    le: (pos) ->
+      return true if @eq(pos)
+      return @lt(pos)  
+
+    ge: (pos) ->
+      !@lt(pos)
+
+    lt: (pos) -> 
+
+      if @cycle < pos.cycle
+        return true 
+      else if @cycle > pos.cycle
+        return false
+
+      if @bar < pos.bar
+        return true 
+      else if @bar > pos.bar
+        return false
+
+      if @sub.lt pos.sub
+        return true 
+      else if @sub.gt pos.sub
+        return false
+      else 
+        return false    
+
+    gt: (pos) -> 
+      !@le(pos) 
+
       	

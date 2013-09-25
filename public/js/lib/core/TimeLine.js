@@ -19,23 +19,29 @@
         this.position = new Position({
           cycle: 0,
           bar: 0,
-          sub: new RVal(0),
-          timeline: this
+          sub: new RVal(0)
         });
         this.resolution = opt.resolution || new Rational(1, 4);
         this.grid = opt.grid || [];
         this.cycle = opt.cycle || false;
         this.is_on = false;
-        this.emitter = new EventEmitter;
-        this.rgen = opt.rgen;
+        this.tracks = opt.tracks || [];
         this.on_tic = function() {
-          return console.log("" + (_this.position.bar + '>' + _this.position.sub.numer + '/' + _this.position.sub.denom + ' mode: ' + _this.current_bar().h_dir_at(_this.position.sub).name));
+          return console.log("" + (_this.position.bar + '>' + _this.position.sub.numer + '/' + _this.position.sub.denom));
         };
-        this.emitter.addListeners({
-          tic: [this.rgen.tic, this.on_tic],
-          start: this.rgen.start
-        });
       }
+
+      TimeLine.prototype.tic = function() {
+        var t, _i, _len, _ref, _results;
+        this.on_tic();
+        _ref = this.tracks;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          t = _ref[_i];
+          _results.push(t.tic());
+        }
+        return _results;
+      };
 
       TimeLine.prototype.start = function(position) {
         var instance,
@@ -53,8 +59,7 @@
         this.origin_point = window.performance.now();
         this.is_on = true;
         this.speed = (60000 / this.current_bar().bpm) * this.current_bar().resolution.toFloat();
-        this.emitter.trigger('start', [this]);
-        this.emitter.trigger('tic');
+        this.tic();
         instance = function() {
           var diff, prev_bar_index;
           prev_bar_index = _this.position.bar;
@@ -62,7 +67,7 @@
           if (prev_bar_index !== _this.position.bar) {
             _this.speed = (60000 / _this.current_bar().bpm) * _this.current_bar().resolution.toFloat();
           }
-          _this.emitter.trigger('tic');
+          _this.tic();
           diff = _this.check_precision();
           if (_this.is_on) {
             return setTimeout(instance, _this.speed - diff);
@@ -87,6 +92,21 @@
 
       TimeLine.prototype.current_bar = function() {
         return this.grid[this.position.bar];
+      };
+
+      TimeLine.prototype.insert_bar = function(bar, index, mult) {
+        var i, _i, _results;
+        if (index == null) {
+          index = 0;
+        }
+        if (mult == null) {
+          mult = 1;
+        }
+        _results = [];
+        for (i = _i = 1; 1 <= mult ? _i <= mult : _i >= mult; i = 1 <= mult ? ++_i : --_i) {
+          _results.push(_a.insert(this.grid, index, bar));
+        }
+        return _results;
       };
 
       TimeLine.prototype.play_line = function(line, midi_chan) {

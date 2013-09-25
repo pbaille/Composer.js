@@ -11,14 +11,14 @@
     }
     MK = root.MK;
     Mode = root.Mode;
-    return root.HarmonicContext = (function() {
-      function HarmonicContext(o) {
-        this.current = new Mode(o);
+    return root.HGen = (function() {
+      function HGen(o) {
+        this.current = new Mode(o || new Mode("C Lyd"));
         this.center = this.current.mother_mode();
         this["function"] = "T";
       }
 
-      HarmonicContext.prototype.abs_move = function() {
+      HGen.prototype.abs_move = function() {
         var args, new_mother_root_name;
         args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         new_mother_root_name = _h.key(MK.PITCHES, (this.center.root.int + MK.MODAL_MOVES[args[0]]) % 12);
@@ -33,7 +33,7 @@
         }
       };
 
-      HarmonicContext.prototype.rel_move = function() {
+      HGen.prototype.rel_move = function() {
         var args, dist;
         args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         this.current.transpose(MK.MODAL_MOVES[args[0]]);
@@ -48,30 +48,30 @@
         return this["function"] = _h.key(MK.MODAL_MOVES, dist);
       };
 
-      HarmonicContext.prototype.intra_abs_move = function(n) {
+      HGen.prototype.intra_abs_move = function(n) {
         return this.current.intra_abs_move(n);
       };
 
-      HarmonicContext.prototype.intra_rel_move = function(n) {
+      HGen.prototype.intra_rel_move = function(n) {
         return this.current.intra_rel_move(n);
       };
 
-      HarmonicContext.prototype.relative = function(mode_name) {
+      HGen.prototype.relative = function(mode_name) {
         return this.current.relative(mode_name);
       };
 
-      HarmonicContext.prototype.centerize = function() {
+      HGen.prototype.centerize = function() {
         return this.center = new Mode(this.current.mother.name);
       };
 
-      HarmonicContext.prototype.set_center = function(o) {
+      HGen.prototype.set_center = function(o) {
         var dist;
         this.center = new Mode(o);
         dist = (this.current.mother.root - this.center.mother.root) % 12;
         return this["function"] = _h.key(MK.MODAL_MOVES, dist);
       };
 
-      return HarmonicContext;
+      return HGen;
 
     })();
   });

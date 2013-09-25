@@ -49,6 +49,14 @@
         });
       };
 
+      Domain.prototype.set_mode = function(m) {
+        if (m instanceof Mode) {
+          return this.mode = m;
+        } else {
+          return this.mode = new Mode(m);
+        }
+      };
+
       return Domain;
 
     })();

@@ -48,27 +48,34 @@ define ["vendors/ruby"], () ->
 # This is incredibly more efficient that the built in permutation method as duplicate elements will yield
 # identical permutations.
 
-  RubyJS.Array.unique_permutation = (block) ->
+  #buggy need work !!!
+  RubyJS.Array.prototype.unique_permutation = (block) ->
     #return _a.unique_permutation(arr) unless block
 
     array_copy = @sort()
-    block.call array_copy.dup()
-    return if arr.length < 2
+    block array_copy.dup()
+    return if @size() < 2
 
     while true
       # Based off of Algorithm L (Donald Knuth)
-      j = @length - 2;
-      j -= 1 while j > 0 && array_copy[j] >= array_copy[j+1]
+      j = @size() - 2
+
+      j -= 1 while j > 0 and array_copy[j] >= array_copy[j+1]
 
       if array_copy[j] < array_copy[j+1]
-        l = @length - 1
+        l = @size() - 1
+
         l -= 1 while array_copy[j] >= array_copy[l] 
 
+        temp = array_copy[j]
         array_copy[j] = array_copy[l] 
-        array_copy[l] = array_copy[j]
-        array_copy[j+1..-1] = _a.reverse(array_copy[j+1..-1])
+        array_copy[l] = temp
+        #array_copy[j+1..@size() -1] = array_copy[j+1..@size() -1].reverse()
+        rev = array_copy.reverse()
+        for e in [j+1..@size()-1]
+          array_copy[e] = rev[e]
 
-        block.call array_copy.dup()
+        block array_copy.dup()
 
       else
         break

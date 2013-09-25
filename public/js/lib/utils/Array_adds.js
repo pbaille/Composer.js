@@ -45,28 +45,32 @@
         }
       });
     };
-    return RubyJS.Array.unique_permutation = function(block) {
-      var array_copy, j, l, _ref, _ref1, _results;
+    return RubyJS.Array.prototype.unique_permutation = function(block) {
+      var array_copy, e, j, l, rev, temp, _i, _ref, _ref1, _results;
       array_copy = this.sort();
-      block.call(array_copy.dup());
-      if (arr.length < 2) {
+      block(array_copy.dup());
+      if (this.size() < 2) {
         return;
       }
       _results = [];
       while (true) {
-        j = this.length - 2;
+        j = this.size() - 2;
         while (j > 0 && array_copy[j] >= array_copy[j + 1]) {
           j -= 1;
         }
         if (array_copy[j] < array_copy[j + 1]) {
-          l = this.length - 1;
+          l = this.size() - 1;
           while (array_copy[j] >= array_copy[l]) {
             l -= 1;
           }
+          temp = array_copy[j];
           array_copy[j] = array_copy[l];
-          array_copy[l] = array_copy[j];
-          [].splice.apply(array_copy, [(_ref = j + 1), (-1) - _ref + 1].concat(_ref1 = _a.reverse(array_copy.slice(j + 1)))), _ref1;
-          _results.push(block.call(array_copy.dup()));
+          array_copy[l] = temp;
+          rev = array_copy.reverse();
+          for (e = _i = _ref = j + 1, _ref1 = this.size() - 1; _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; e = _ref <= _ref1 ? ++_i : --_i) {
+            array_copy[e] = rev[e];
+          }
+          _results.push(block(array_copy.dup()));
         } else {
           break;
         }

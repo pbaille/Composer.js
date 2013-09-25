@@ -12,6 +12,10 @@ define [
   "lib/core/Position"
   "lib/core/TimeLine"
   "lib/core/Bar"
+  "lib/core/Composer"
+  "lib/core/Track"
+  "lib/core/Directive"
+
   ], () ->
 	console.log "core_loaded"
 

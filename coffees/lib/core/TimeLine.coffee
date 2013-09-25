@@ -28,7 +28,6 @@ define [
         cycle: 0 
         bar: 0
         sub: new RVal 0
-        timeline: @
 
       @resolution = opt.resolution || new Rational(1,4) #tic every sixtenth note by default
 
@@ -37,21 +36,26 @@ define [
       @cycle = opt.cycle || false #does it loop or not
       @is_on = false
 
-      @emitter = new EventEmitter
+      #@emitter = new EventEmitter
 
-      #@tracks = opt.tracks || [] #array of track objects
+      @tracks = opt.tracks || [] #array of track objects
 
-      @rgen = opt.rgen
+      #@rgen = opt.rgen
       #@mgen = opt.mgen
       #@hgen = opt.hgen
 
       @on_tic = => #simple function that log time on every tic [opt.on_tic || ()]
-        console.log "#{ @position.bar + '>' + @position.sub.numer + '/' + @position.sub.denom  + ' mode: ' + @current_bar().h_dir_at(@position.sub).name }"
+        console.log "#{ @position.bar + '>' + @position.sub.numer + '/' + @position.sub.denom }" 
 
       # add event listeners
-      @emitter.addListeners
-        tic: [@rgen.tic, @on_tic]
-        start: @rgen.start
+      # @emitter.addListeners
+      #   tic: [@rgen.tic, @on_tic]
+      #   start: @rgen.start
+
+    tic: ->
+      @on_tic()
+      for t in @tracks  
+        t.tic()
 
 
       ########################################################
@@ -74,8 +78,9 @@ define [
       #init speed
       @speed = (60000 / @current_bar().bpm) * @current_bar().resolution.toFloat()
 
-      @emitter.trigger('start', [@] ) #pass to timeline object to listeners
-      @emitter.trigger('tic') 
+      #@emitter.trigger('start', [@] ) #pass to timeline object to listeners
+      @tic() 
+
     
       instance = () =>
 
@@ -97,7 +102,7 @@ define [
         if prev_bar_index != @position.bar
           @speed = (60000 / @current_bar().bpm) * @current_bar().resolution.toFloat()
 
-        @emitter.trigger('tic')
+        @tic()
   
         diff = @check_precision()
         setTimeout instance, (@speed - diff) if @is_on
@@ -128,7 +133,12 @@ define [
     ########## helpers ###############
     
     current_bar: ->
-      @grid[@position.bar]  
+      @grid[@position.bar] 
+
+    insert_bar: (bar ,index = 0, mult = 1) ->
+      for i in [1..mult]
+        _a.insert(@grid,index,bar)
+
 
     ########## PLAY ##################
 

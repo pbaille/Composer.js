@@ -17,10 +17,10 @@ define ["lib/core/RVal","vendors/ruby"], ->
       # if null defer to timeline resolution
       @resolution = opt.resolution || null 
 
-      # directives (time positioned indications)
-      @harmonic_directives = opt.harmonic_directives || [] # array of {at: position, mode: mode object}
-      @rythmic_directives = opt.rythmic_directives || []
-      @melodic_directives = opt.melodic_directives || []
+      # # directives (time positioned indications)
+      # @harmonic_directives = opt.harmonic_directives || [] # array of {at: position, mode: mode object}
+      # @rythmic_directives = opt.rythmic_directives || []
+      # @melodic_directives = opt.melodic_directives || []
       @bpm_directives = opt.bpm_directives || []
 
     duration: ->
@@ -42,23 +42,23 @@ define ["lib/core/RVal","vendors/ruby"], ->
       else
         return "not yet implemented"
 
-    h_dir_at: (sub) ->
-      result = {}	
-      for hd in @harmonic_directives
-      	break if hd.at.gt(sub)
-      	result = hd.mode
-      return result	
+    # h_dir_at: (sub) ->
+    #   result = {}	
+    #   for hd in @harmonic_directives
+    #   	break if hd.at.gt(sub)
+    #   	result = hd.mode
+    #   return result	
 
-    m_dir_at: (sub) ->
-      result = {} 
-      for md in @melodic_directives
-        break if md.at.gt(sub)
-        result = md
-      return result 
+    # m_dir_at: (sub) ->
+    #   result = {} 
+    #   for md in @melodic_directives
+    #     break if md.at.gt(sub)
+    #     result = md
+    #   return result 
 
-    bpm_dir_at: (sub) ->
+    # bpm_dir_at: (sub) ->
 
-    r_dir_at: (sub) ->
+    # r_dir_at: (sub) ->
         
       
 

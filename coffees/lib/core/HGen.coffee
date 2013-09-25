@@ -8,9 +8,9 @@ define ["lib/core/Mode", "vendors/ruby"], ->
   MK= root.MK
   Mode = root.Mode
 
-  class root.HarmonicContext
+  class root.HGen
     constructor: (o) ->
-      @current= new Mode o
+      @current= new Mode o || new Mode "C Lyd" #default to C Lyd
       @center= @current.mother_mode()
       @function= "T"
 

@@ -41,15 +41,23 @@ require ["jquery", "jasmine-html"], ($, jasmine) ->
     "spec/Mode.spec"
     "spec/Constants.spec"
     "spec/Domain.spec"
-    "spec/HarmonicContext.spec"
+    "spec/HGen.spec"
     "spec/Bar.spec"
     "spec/TimeLine.spec"
     "spec/RGen.spec"
     "spec/Position.spec"
     "spec/MGen.spec"
+    "spec/Track.spec"
+    "spec/Composer.spec"
+    "spec/Directive.spec"
 
+    "spec/init"
   ]
 
   $ ->
     require specs, (spec) ->
+
       jasmineEnv.execute()  
+
+
+

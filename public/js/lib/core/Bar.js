@@ -14,9 +14,6 @@
         this.beats = opt.beats;
         this.beat_val = opt.beat_val;
         this.resolution = opt.resolution || null;
-        this.harmonic_directives = opt.harmonic_directives || [];
-        this.rythmic_directives = opt.rythmic_directives || [];
-        this.melodic_directives = opt.melodic_directives || [];
         this.bpm_directives = opt.bpm_directives || [];
       }
 
@@ -44,38 +41,6 @@
           return "not yet implemented";
         }
       };
-
-      Bar.prototype.h_dir_at = function(sub) {
-        var hd, result, _i, _len, _ref;
-        result = {};
-        _ref = this.harmonic_directives;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          hd = _ref[_i];
-          if (hd.at.gt(sub)) {
-            break;
-          }
-          result = hd.mode;
-        }
-        return result;
-      };
-
-      Bar.prototype.m_dir_at = function(sub) {
-        var md, result, _i, _len, _ref;
-        result = {};
-        _ref = this.melodic_directives;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          md = _ref[_i];
-          if (md.at.gt(sub)) {
-            break;
-          }
-          result = md;
-        }
-        return result;
-      };
-
-      Bar.prototype.bpm_dir_at = function(sub) {};
-
-      Bar.prototype.r_dir_at = function(sub) {};
 
       return Bar;
 
