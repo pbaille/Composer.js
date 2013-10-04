@@ -11,6 +11,9 @@
         expect(_a.wrap_if_not(5)).toEqual([5]);
         return expect(_a.wrap_if_not(a)).toEqual([1, 2, 3]);
       });
+      it("pick_random_el", function() {
+        return expect(_a.pick_random_el(a)).toBeTruthy();
+      });
       it("rotate", function() {
         return expect(_a.rotate(a, 2)).toEqual([3, 1, 2]);
       });

@@ -1,4 +1,4 @@
-define ["lib/core/Note", "lib/core/RVal", "lib/core/Position"], ->
+define ["lib/core/base/Note", "lib/core/base/RVal", "lib/core/structure/Position"], ->
   
   MetaPitch = AC.Core.MetaPitch
   Alteration = AC.Core.Alteration

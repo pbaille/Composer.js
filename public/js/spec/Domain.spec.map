@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Domain.spec.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "coffees/spec/Domain.spec.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,CAAA,CAA4B,GAA5B,GAA4B,QAArB;CAEL,OAAA,IAAA;CAAA,CAAW,CAAF,CAAT,EAAA;CAAA,CACS,CAAF,CAAP;CAES,CAAgB,CAAA,KAAzB,CAAyB,EAAzB,GAAA;CACI,CAAH,CAAoB,MAAA,IAApB,EAAA;CACE,GAAA,QAAA;CAAA,EAAQ,CAAA,IAAR;CAAA,CACiB,CAAT,CAAA,EAAA,EAAR;CACO,CAA+B,IAAtC,CAAA,OAAO,CAAP;CAHF,MAAoB;CADrB,IAAyB;CAL3B,EAA4B;CAA5B"
+}

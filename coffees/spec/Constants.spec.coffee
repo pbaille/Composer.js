@@ -1,4 +1,4 @@
-define ['lib/core/Constants'], () ->  
+define ['lib/core/base/Constants'], () ->  
   MK = AC.Core.MK
   describe "MK class", ->
 

@@ -1,4 +1,4 @@
-define ["lib/core/RGen","lib/core/RVal","lib/core/Position"], ->
+define ["lib/core/composer/rythmn/RGen","lib/core/base/RVal","lib/core/structure/Position"], ->
   
   RGen = AC.Core.RGen 
   RVal = AC.Core.RVal

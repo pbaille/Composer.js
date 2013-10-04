@@ -1,4 +1,4 @@
-define ["lib/core/Mode"], () ->
+define ["lib/core/base/Mode"], () ->
   
   Mode = AC.Core.Mode
   AbstractMode = AC.Core.AbstractMode
@@ -57,6 +57,17 @@ define ["lib/core/Mode"], () ->
         window.m1 = new Mode "E Melm"
         window.m2.set_mother "Lyd+"
         expect(m2).toEqual(m1)
+
+      it "set_prio", () ->
+        m1 = new Mode "C Lyd"
+        m1.set_prio [2,4,7]
+        expect(m1.prio).toEqual([2,4,7,6,11,9])
+        m2 = new Mode "D Lyd"
+        m2.set_prio [2,4,7,3]
+        expect(m2.prio).toEqual([2,4,7,6,11,9])
+        m3 = new Mode "E Lyd"
+        m3.set_prio [2,0,4,7]
+        expect(m3.prio).toEqual([2,4,7,6,11,9])
 
     describe "harmonic motions" , () ->
 

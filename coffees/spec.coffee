@@ -33,8 +33,10 @@ require ["jquery", "jasmine-html"], ($, jasmine) ->
     htmlReporter.specFilter spec
   
   specs = [
+
     "spec/RVal.spec"
     "spec/Note.spec"
+    "spec/Interval.spec"
     "spec/Degree.spec"
     "spec/Array_adds.spec"
     "spec/AbstractMode.spec"
@@ -50,6 +52,8 @@ require ["jquery", "jasmine-html"], ($, jasmine) ->
     "spec/Track.spec"
     "spec/Composer.spec"
     "spec/Directive.spec"
+    "spec/Combinatorics.spec"
+    "spec/MelodicPattern.spec"
 
     "spec/init"
   ]

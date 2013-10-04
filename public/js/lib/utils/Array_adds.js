@@ -7,6 +7,24 @@
       }
       return arr;
     };
+    _a.pick_random_el = function(arr) {
+      var rand_index;
+      rand_index = Math.floor(Math.random() * arr.length);
+      return arr[rand_index];
+    };
+    _a.scramble = function(arr) {
+      var counter, index, temp;
+      counter = arr.length;
+      temp = void 0;
+      index = void 0;
+      while (counter--) {
+        index = (Math.random() * (counter + 1)) | 0;
+        temp = arr[counter];
+        arr[counter] = arr[index];
+        arr[index] = temp;
+      }
+      return arr;
+    };
     _a.rotations = function(arr) {
       var result, x, _i, _ref;
       result = [];
@@ -45,37 +63,43 @@
         }
       });
     };
-    return RubyJS.Array.prototype.unique_permutation = function(block) {
-      var array_copy, e, j, l, rev, temp, _i, _ref, _ref1, _results;
+    return RubyJS.Array.prototype.unique_permutation = function() {
+      var array_copy, e, i, j, l, range, results, rev, temp, _i, _j, _len, _ref, _ref1, _results;
       array_copy = this.sort();
-      block(array_copy.dup());
+      results = [];
+      results.push(array_copy.dup().value());
       if (this.size() < 2) {
         return;
       }
-      _results = [];
       while (true) {
         j = this.size() - 2;
-        while (j > 0 && array_copy[j] >= array_copy[j + 1]) {
+        while (j > 0 && array_copy.get(j) >= array_copy.get(j + 1)) {
           j -= 1;
         }
-        if (array_copy[j] < array_copy[j + 1]) {
+        if (array_copy.get(j) < array_copy.get(j + 1)) {
           l = this.size() - 1;
-          while (array_copy[j] >= array_copy[l]) {
+          while (array_copy.get(j) >= array_copy.get(l)) {
             l -= 1;
           }
-          temp = array_copy[j];
-          array_copy[j] = array_copy[l];
-          array_copy[l] = temp;
-          rev = array_copy.reverse();
-          for (e = _i = _ref = j + 1, _ref1 = this.size() - 1; _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; e = _ref <= _ref1 ? ++_i : --_i) {
-            array_copy[e] = rev[e];
+          temp = array_copy.get(j);
+          array_copy.set(j, array_copy.get(l));
+          array_copy.set(l, temp);
+          rev = array_copy.dup().reverse();
+          range = (function() {
+            _results = [];
+            for (var _i = _ref = j + 1, _ref1 = this.size() - 1; _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; _ref <= _ref1 ? _i++ : _i--){ _results.push(_i); }
+            return _results;
+          }).apply(this);
+          for (i = _j = 0, _len = range.length; _j < _len; i = ++_j) {
+            e = range[i];
+            array_copy.set(e, rev.get(i));
           }
-          _results.push(block(array_copy.dup()));
+          results.push(array_copy.dup().value());
         } else {
           break;
         }
       }
-      return _results;
+      return results;
     };
   });
 

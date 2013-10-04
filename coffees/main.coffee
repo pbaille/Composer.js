@@ -17,6 +17,8 @@ window.AC.MIDI = {}
 window.AC.Utils = {}
 window.AC.GUI = {}
 
+#####################
+console.clear()
     
 require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jquery"], ()->
 
@@ -24,7 +26,8 @@ require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jq
     new AC.Utils.Rational(n,d)
 
   jQuery ($) ->
-    
+
+
     RGen = AC.Core.RGen
     TimeLine = AC.Core.TimeLine
     RVal = AC.Core.RVal
@@ -40,10 +43,24 @@ require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jq
     bar = new Bar 
       beats: 4
       beat_val: new RVal 1
-      bpm: 60
+      bpm: 120
       resolution: new RVal 1,4
 
     timeline.insert_bar bar,0,2 #insert 4 * bar at index 0
+
+    # timeline.grid = [
+    #   new Bar 
+    #     beats: 4
+    #     beat_val: new RVal 1
+    #     bpm: 60
+    #     resolution: new RVal 1,4
+    #   new Bar 
+    #     beats: 3
+    #     beat_val: new RVal 1
+    #     bpm: 60
+    #     resolution: new RVal 1,4  
+    # ]
+
 
     track1 = new Track
       midi_channel: 1
@@ -56,8 +73,9 @@ require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jq
           args:[ 
             [# [ {rval: new RVal(1)  , occ: 1 }
             #   {rval: new RVal(1,2), occ: 1 }
-              {rval: new RVal(1,6), occ: 1 }
-              {rval: new RVal(1,8), occ: 1 }
+              # {rval: new RVal(1,4), occ: 1 }
+              {rval: new RVal(1,4), occ: 4 }
+
             ]
           ]
 

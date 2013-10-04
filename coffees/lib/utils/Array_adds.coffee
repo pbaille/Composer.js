@@ -6,6 +6,26 @@ define ["vendors/ruby"], () ->
     arr = [arr] unless arr instanceof Array 
     return arr
 
+  _a.pick_random_el= (arr) ->
+    rand_index = Math.floor(Math.random()*(arr.length))
+    return arr[rand_index]
+  
+  _a.scramble = (arr) ->
+    counter = arr.length
+    temp= undefined
+    index= undefined
+
+    #While there are elements in the arr
+    while counter-- 
+      #Pick a random index
+      index = (Math.random() * (counter + 1)) | 0
+
+      #And swap the last element with it
+      temp = arr[counter]
+      arr[counter] = arr[index]
+      arr[index] = temp
+
+    return arr
   ############ RubyJS.Array adds (functional style) ##########
 
   #already implemented in rubyjs , maybe remove it... but fear of a break
@@ -48,37 +68,40 @@ define ["vendors/ruby"], () ->
 # This is incredibly more efficient that the built in permutation method as duplicate elements will yield
 # identical permutations.
 
-  #buggy need work !!!
-  RubyJS.Array.prototype.unique_permutation = (block) ->
-    #return _a.unique_permutation(arr) unless block
+  RubyJS.Array.prototype.unique_permutation = () ->
 
     array_copy = @sort()
-    block array_copy.dup()
+    results = []
+    results.push array_copy.dup().value()
     return if @size() < 2
 
     while true
       # Based off of Algorithm L (Donald Knuth)
       j = @size() - 2
 
-      j -= 1 while j > 0 and array_copy[j] >= array_copy[j+1]
+      j -= 1 while j > 0 and array_copy.get(j) >= array_copy.get(j+1)
 
-      if array_copy[j] < array_copy[j+1]
+      if array_copy.get(j) < array_copy.get(j+1)
         l = @size() - 1
 
-        l -= 1 while array_copy[j] >= array_copy[l] 
+        l -= 1 while array_copy.get(j) >= array_copy.get(l)
 
-        temp = array_copy[j]
-        array_copy[j] = array_copy[l] 
-        array_copy[l] = temp
-        #array_copy[j+1..@size() -1] = array_copy[j+1..@size() -1].reverse()
-        rev = array_copy.reverse()
-        for e in [j+1..@size()-1]
-          array_copy[e] = rev[e]
+        temp = array_copy.get(j)
+        array_copy.set(j,array_copy.get(l))
+        array_copy.set(l,temp)
 
-        block array_copy.dup()
+        rev = array_copy.dup().reverse()
+        range = [j+1..@size()-1]
+        
+        for e, i in range
+          array_copy.set(e,rev.get(i))
+
+        results.push array_copy.dup().value()
 
       else
         break
+
+    return results  
 
 
 #   def unique_permutation_no_rot

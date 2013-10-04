@@ -27,24 +27,25 @@ define [], () ->
     return result                        # Return the prime factors
   
   return AC.Utils
-#console.log factorise(242)
 
-# Object.prototype.dup = () ->
-#   JSON.parse(JSON.stringify(@))
-
-# obj= 
-#   a: 1
-#   b: 2
-#   display: () ->
-#     console.log @
-
-# R
-
-# obj2 = obj.dup()
-
-# obj2.display()
-
-# obj.a = 3
-
-# obj.display()
-# obj2.display()
+  root.clone = (obj) ->
+    if not obj? or typeof obj isnt 'object'
+      return obj
+  
+    if obj instanceof Date
+      return new Date(obj.getTime()) 
+  
+    if obj instanceof RegExp
+      flags = ''
+      flags += 'g' if obj.global?
+      flags += 'i' if obj.ignoreCase?
+      flags += 'm' if obj.multiline?
+      flags += 'y' if obj.sticky?
+      return new RegExp(obj.source, flags) 
+  
+    newInstance = new obj.constructor()
+  
+    for key of obj
+      newInstance[key] = clone obj[key]
+  
+    return newInstance

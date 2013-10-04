@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Interval.spec.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "coffees/spec/Interval.spec.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,CAAA,CAA+C,GAA/C,GAA+C,MAAxC,IAAA;CAEL,OAAA,OAAA;CAAA,CAAU,CAAF,CAAR,CAAA;CAAA,CACa,CAAF,CAAX,IAAA;CAES,CAAmB,CAAA,KAA5B,CAA4B,EAA5B,KAAA;CACK,CAAH,CAAY,GAAZ,GAAY,IAAZ;CACE,WAAA;CAAA,EAAQ,CAAA,IAAR;CACO,KAAP,IAAA,KAAA;CAFF,MAAY;CADd,IAA4B;CAL9B,EAA+C;CAA/C"
+}

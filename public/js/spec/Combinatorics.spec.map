@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Combinatorics.spec.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "coffees/spec/Combinatorics.spec.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,CAAA,CAAoC,GAApC,GAAoC,gBAA7B;CACL,OAAA,OAAA;CAAA,CAAoB,CAAF,CAAlB,CAA0B,UAA1B;CAES,CAAyB,CAAA,KAAlC,CAAkC,EAAlC,YAAA;CACI,CAAH,CAAW,GAAX,GAAW,IAAX;CACE,CAAA,CAAgB,CAAA,EAAV,EAAN,OAAgB,8BAAA;CACT,CAAP,IAAA,IAAA,KAAA;CAFF,MAAW;CADZ,IAAkC;CAHpC,EAAoC;CAApC"
+}

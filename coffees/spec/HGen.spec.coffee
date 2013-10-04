@@ -1,4 +1,4 @@
-define ["lib/core/HGen"], ->
+define ["lib/core/composer/harmony/HGen"], ->
   
   HGen = AC.Core.HGen
   Mode = AC.Core.Mode

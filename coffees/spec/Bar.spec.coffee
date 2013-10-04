@@ -1,4 +1,4 @@
-define ["lib/core/Bar", "lib/core/RVal", "lib/core/Mode"], ->
+define ["lib/core/structure/Bar", "lib/core/base/RVal", "lib/core/base/Mode"], ->
 
   Bar = AC.Core.Bar
   RVal = AC.Core.RVal

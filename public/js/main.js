@@ -27,6 +27,8 @@
 
   window.AC.GUI = {};
 
+  console.clear();
+
   require(["lib/core/index", "lib/GUI/index", "lib/midi/index", "lib/utils/index", "jquery"], function() {
     window.rat = function(n, d) {
       return new AC.Utils.Rational(n, d);
@@ -47,7 +49,7 @@
       bar = new Bar({
         beats: 4,
         beat_val: new RVal(1),
-        bpm: 60,
+        bpm: 120,
         resolution: new RVal(1, 4)
       });
       timeline.insert_bar(bar, 0, 2);
@@ -65,11 +67,8 @@
             args: [
               [
                 {
-                  rval: new RVal(1, 6),
-                  occ: 1
-                }, {
-                  rval: new RVal(1, 8),
-                  occ: 1
+                  rval: new RVal(1, 4),
+                  occ: 4
                 }
               ]
             ]

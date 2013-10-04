@@ -1,4 +1,4 @@
-define ['lib/core/Degree'], () ->  
+define ['lib/core/base/Degree'], () ->  
 
   describe "Degree class", ->
 

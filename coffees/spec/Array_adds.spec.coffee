@@ -9,7 +9,10 @@ define ['vendors/ruby','lib/utils/Array_adds'], () ->
 
     it "wrap_if_not", ->
       expect(_a.wrap_if_not(5)).toEqual([5])  
-      expect(_a.wrap_if_not(a)).toEqual([1,2,3])  
+      expect(_a.wrap_if_not(a)).toEqual([1,2,3]) 
+
+    it "pick_random_el", ->
+      expect(_a.pick_random_el(a)).toBeTruthy() 
 
     it "rotate", ->
       expect(_a.rotate(a,2)).toEqual([3,1,2])

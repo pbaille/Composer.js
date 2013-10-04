@@ -1,4 +1,4 @@
-define ['lib/core/AbstractMode'], () ->  
+define ['lib/core/base/AbstractMode'], () ->  
   
   AbstractMode = AC.Core.AbstractMode
 

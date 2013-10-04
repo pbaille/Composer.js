@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Constants.spec.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "coffees/spec/Constants.spec.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,CAAA,CAA+B,GAA/B,GAA+B,WAAxB;CACL,CAAA,MAAA;CAAA,CAAA,CAAK,CAAL;CACS,CAAY,CAAA,KAArB,CAAqB,CAArB,CAAA;CAEK,CAAH,CAAuB,MAAA,IAAvB,KAAA;CAES,CAAE,GAAW,CAApB,CAAA,EAAoB,MAApB;CAFF,MAAuB;CAFzB,IAAqB;CAFvB,EAA+B;CAA/B"
+}

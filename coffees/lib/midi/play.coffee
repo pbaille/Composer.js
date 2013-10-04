@@ -1,4 +1,4 @@
-define ["lib/core/Note", "lib/utils/Rational"], () ->
+define ["lib/core/base/Note", "lib/utils/Rational"], () ->
 
   Note = AC.Core.Note
   Rational = AC.Utils.Rational

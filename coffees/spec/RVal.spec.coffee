@@ -1,4 +1,4 @@
-define ['lib/utils/Rational','lib/core/Rval', 'vendors/ruby'], () ->  
+define ['lib/utils/Rational','lib/core/base/Rval', 'vendors/ruby'], () ->  
   
   Rational= AC.Utils.Rational
   RVal = AC.Core.RVal
