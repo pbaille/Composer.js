@@ -88,9 +88,9 @@ define [
       @mother= root.Mode.Moth(r, _h.key(MK.PITCHES , r ) + " " + @abstract.mother.name , @abstract.mother.functs)
 
     degrees_calc: ->
-      @degrees=[]
-      for x,i in @abstract.functs.slice(1,8)
-        @degrees.push new Degree(MK.ABSTRACT_DEGREES[i+1], x)
+      @degrees={}
+      for x,i in @abstract.functs
+        @degrees[MK.ABSTRACT_DEGREES[i]] = new Degree(MK.ABSTRACT_DEGREES[i], x)
 
 	
  #    #************************** SETTERS ***********************************
@@ -205,6 +205,9 @@ define [
 
     mother_mode: ->
       new Mode @mother.name
+
+    degree_int: (degree) ->
+      (degree.dist + @root.int) %12
 
     # def partials arg=(2..6), include_root=true #Fixnum or Range, root boolean
 

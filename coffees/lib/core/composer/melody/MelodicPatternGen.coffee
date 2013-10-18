@@ -122,6 +122,7 @@ define ["lib/utils/Combinatorics", "lib/utils/Array_adds", "vendors/ruby"], ->
                 return mp
 
       else	
+        #console.log "random!!!!"
         pat = {}
         pat = _a.pick_random_el @patterns
         pat.iterations = _a.pick_random_el @iterations

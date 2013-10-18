@@ -63,7 +63,7 @@
         }
       });
     };
-    return RubyJS.Array.prototype.unique_permutation = function() {
+    RubyJS.Array.prototype.unique_permutation = function() {
       var array_copy, e, i, j, l, range, results, rev, temp, _i, _j, _len, _ref, _ref1, _results;
       array_copy = this.sort();
       results = [];
@@ -98,6 +98,45 @@
         } else {
           break;
         }
+      }
+      return results;
+    };
+    _a.statusCombination = function(arr) {
+      var i, int, it, item, result, temp, x, _i, _j, _k, _l, _len, _len1;
+      result = [];
+      temp = [];
+      for (_i = 0, _len = arr.length; _i < _len; _i++) {
+        x = arr[_i];
+        result = [];
+        if (temp.length === 0) {
+          for (i = _j = 0; 0 <= x ? _j <= x : _j >= x; i = 0 <= x ? ++_j : --_j) {
+            result.push([i]);
+          }
+        } else {
+          for (int = _k = 0; 0 <= x ? _k <= x : _k >= x; int = 0 <= x ? ++_k : --_k) {
+            for (_l = 0, _len1 = temp.length; _l < _len1; _l++) {
+              item = temp[_l];
+              it = item.concat(int);
+              result.push(it);
+            }
+          }
+        }
+        temp = result.slice(0);
+      }
+      return result;
+    };
+    return _a.comb_zip = function(a) {
+      var results, status_tab, x, _i, _len, _ref;
+      results = [];
+      status_tab = a.map(function(x) {
+        return x.length - 1;
+      });
+      _ref = _a.statusCombination(status_tab);
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        x = _ref[_i];
+        results.push(x.map(function(y, i) {
+          return a[i][y];
+        }));
       }
       return results;
     };

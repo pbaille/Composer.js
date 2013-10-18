@@ -131,6 +131,14 @@
         return this.value - other_pitch.value;
       };
 
+      Pitch.prototype.transposed = function(dist) {
+        return new Pitch(this.value + dist);
+      };
+
+      Pitch.prototype.eq = function(pitch) {
+        return this.value === pitch.value;
+      };
+
       return Pitch;
 
     })();

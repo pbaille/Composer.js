@@ -3,8 +3,8 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["lib/core/base/Domain", "lib/utils/Combinatorics", "lib/core/composer/melody/MelodicPatternGen", "vendors/ruby"], function() {
-    var Domain, DomainPartition, MelodicPatternGen, Mode, Pitch, root;
+  define(["lib/core/base/Domain", "lib/utils/Combinatorics", "lib/utils/Module", "lib/core/composer/melody/MelodicPatternGen", "lib/core/composer/melody/PassingTones", "vendors/ruby"], function() {
+    var Domain, DomainPartition, MelodicPatternGen, Mode, Module, PassingTones, Pitch, root;
     if (typeof global !== "undefined" && global !== null) {
       root = global.AC.Core;
     } else {
@@ -15,24 +15,23 @@
     Pitch = AC.Core.Pitch;
     DomainPartition = AC.Utils.DomainPartition;
     MelodicPatternGen = AC.Core.MelodicPatternGen;
+    PassingTones = AC.Core.PassingTones;
+    Module = AC.Utils.Module;
     return root.MGen = (function(_super) {
       __extends(MGen, _super);
 
       function MGen(opt) {
-        if (!opt) {
+        if (opt == null) {
           opt = {};
         }
-        MGen.__super__.constructor.call(this, {
-          mode: opt.mode || new Mode("C Lyd"),
-          bounds: opt.bounds || [50, 80]
-        });
+        MGen.__super__.constructor.call(this, opt);
         this.current_pitch = opt.current_pitch || this.pitches[opt.current_index] || _a.pick_random_el(this.pitches);
         this.current_index = opt.current_index || this.pitches.indexOf(this.current_pitch);
         this.melodicPatternGen = new MelodicPatternGen({
-          steps_array: [-3, -1, 1, 3],
-          iterations: [1, 2, 3],
+          steps_array: [-4, -3, 3, 4],
+          iterations: [2, 3, 4],
           cycle_step: [-3, -2, -1, 1, 2, 3],
-          pattern_length: [2, 3, 4]
+          pattern_length: [2, 3, 4, 5, 6]
         });
         if (opt.strategy) {
           this[opt.strategy.name].apply(this, opt.strategy.args);
@@ -56,16 +55,42 @@
       };
 
       MGen.prototype.set_current_pitch = function(pitch) {
-        var pitches;
         if (!(pitch instanceof Pitch)) {
           pitch = new Pitch(pitch);
         }
-        pitches = this.pitches.slice(0);
-        pitches.sort(function(a, b) {
-          return Math.abs(a.dist_to(b));
-        });
-        this.current_pitch = pitches[0];
-        return this.current_index = this.pitches.indexOf(this.current_pitch);
+        pitch = this.find_closest_pitch_from(pitch);
+        this.current_index = this.indexOf(pitch);
+        return this.current_pitch = this.pitches[this.current_index];
+      };
+
+      MGen.prototype.get_current_degree = function() {
+        var i, pci, pitch_class_int, _i, _len, _ref;
+        pitch_class_int = this.current_pitch.value % 12;
+        _ref = this.available_concrete();
+        for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+          pci = _ref[i];
+          if (pci === pitch_class_int) {
+            return this.available_degrees_array()[i];
+          }
+        }
+        throw "get_current_degree can't find degree :s weird!";
+      };
+
+      MGen.prototype.set_melodic_context = function(mode, degrees_functions) {
+        MGen.__super__.set_melodic_context.call(this, mode, degrees_functions);
+        return this.set_current_pitch(this.find_closest_pitch_from(this.current_pitch));
+      };
+
+      MGen.prototype.find_closest_pitch_from = function(pitch) {
+        var i, intervals, min, pval, _i, _len, _ref;
+        intervals = [];
+        _ref = this.pitches_values();
+        for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+          pval = _ref[i];
+          intervals.push(Math.abs(pitch.value - pval));
+        }
+        min = Math.min.apply(Math, intervals);
+        return this.pitches[intervals.indexOf(min)];
       };
 
       MGen.prototype.step = function(n) {
@@ -128,11 +153,10 @@
             if (_this.step(step)) {
               return _this.current_pitch;
             } else {
-              _this.step_pattern2(_this.melodicPatternGen.give_pattern(_this.bounds_from_current_pitch()));
-              return _this.next();
+              throw "out of bounds!! means that MelodicPatternGen#give_pattern doesn't works well";
             }
           } else {
-            _this.step_pattern2(_this.melodicPatternGen.give_pattern(_this.bounds_from_current_pitch()));
+            _this.step_pattern2();
             return _this.next();
           }
         };
@@ -144,24 +168,25 @@
           rep = false;
         }
         return this.next = function() {
-          var arr, s, zero_index, _i, _results;
-          while (_this.current_index + min < 0) {
-            min++;
+          var arr, zero_index, _i, _max, _min, _results;
+          _min = min;
+          _max = max;
+          while (_this.current_index + _min < 0) {
+            _min++;
           }
-          while (_this.current_index + max >= _this.pitches.length) {
-            max--;
+          while (_this.current_index + _max >= _this.pitches.length) {
+            _max--;
           }
           arr = (function() {
             _results = [];
-            for (var _i = min; min <= max ? _i <= max : _i >= max; min <= max ? _i++ : _i--){ _results.push(_i); }
+            for (var _i = _min; _min <= _max ? _i <= _max : _i >= _max; _min <= _max ? _i++ : _i--){ _results.push(_i); }
             return _results;
           }).apply(this);
           if (!rep) {
             zero_index = arr.indexOf(0);
             arr.splice(zero_index, 1);
           }
-          s = _a.pick_random_el(arr);
-          _this.step(s);
+          _this.step(_a.sample(arr));
           return _this.current_pitch;
         };
       };
@@ -187,7 +212,34 @@
       };
 
       MGen.prototype.random_pitch = function() {
-        return _a.pick_random_el(this.pitches);
+        return _a.sample(this.pitches);
+      };
+
+      MGen.prototype.drunk_passing = function(passing_size, broderie) {
+        var dist_from_target_array,
+          _this = this;
+        if (broderie == null) {
+          broderie = false;
+        }
+        dist_from_target_array = [];
+        return this.next = function() {
+          var degree, passing_set, pitch, pitch_val, profile;
+          if (dist_from_target_array.length === 0) {
+            _this.set_current_pitch(_a.sample(_this.main_pitches));
+            degree = _this.get_current_degree();
+            profile = _this.passing_profile[degree.name];
+            passing_set = _a.sample(profile.passing_combinations[passing_size]);
+            passing_set = _a.scramble(passing_set);
+            dist_from_target_array = _this.passing_set_to_dist_from_target_array(degree, passing_set);
+            dist_from_target_array.push(0);
+            if (broderie) {
+              dist_from_target_array = [0].concat(dist_from_target_array);
+            }
+          }
+          pitch_val = _this.current_pitch.value + dist_from_target_array.splice(0, 1)[0];
+          pitch = new Pitch(pitch_val);
+          return pitch;
+        };
       };
 
       return MGen;

@@ -64,9 +64,7 @@ define ["vendors/ruby"], () ->
   _a.to_functs= (arr) ->
     arr.map (i) -> if i then i % 12 else i  
 
-# Add the unique_permutation method to the Array class.
-# This is incredibly more efficient that the built in permutation method as duplicate elements will yield
-# identical permutations.
+  ########## Combinatorics #########
 
   RubyJS.Array.prototype.unique_permutation = () ->
 
@@ -101,7 +99,36 @@ define ["vendors/ruby"], () ->
       else
         break
 
-    return results  
+    return results
+
+  _a.statusCombination= (arr) ->
+    #a=int[] (maxVal of each slot)
+    # Caution!!! values from 0! 1=> 2 status (0,1)
+
+    result = []
+    temp = []
+    # debugger
+    for x in arr
+      result = []
+      if temp.length == 0
+        result.push [i] for i in [0..x]
+      else
+        for int in [0..x]
+          for item in temp
+            it = item.concat int
+            result.push it
+      temp= result[..]
+
+    return result    
+  
+  _a.comb_zip= (a) ->
+
+    results= []
+    status_tab= a.map (x) -> x.length-1
+  
+    for x in _a.statusCombination(status_tab)
+      results.push x.map (y,i) -> a[i][y]
+    return results
 
 
 #   def unique_permutation_no_rot

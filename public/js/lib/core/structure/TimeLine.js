@@ -75,7 +75,17 @@
         setTimeout(instance, this.speed);
       };
 
-      TimeLine.prototype.stop = function() {};
+      TimeLine.prototype.stop = function() {
+        var t, _i, _len, _ref, _results;
+        this.is_on = false;
+        _ref = this.tracks;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          t = _ref[_i];
+          _results.push(t.reset());
+        }
+        return _results;
+      };
 
       TimeLine.prototype.check_precision = function() {
         var computed, real, result;
@@ -110,6 +120,9 @@
 
       TimeLine.prototype.play_line = function(line, midi_chan) {
         var cn, n, _i, _len, _results;
+        if (midi_chan == null) {
+          midi_chan = 1;
+        }
         if (!(line instanceof Array)) {
           line = [line];
         }
@@ -118,7 +131,7 @@
           n = line[_i];
           if (n instanceof Note) {
             _results.push(AC.MIDI.simple_play({
-              channel: midi_chan || 1,
+              channel: midi_chan,
               pitch: n.pitch.value,
               velocity: n.velocity,
               duration: this.positioned_rval_to_ms(n.position, n.duration),
@@ -131,7 +144,7 @@
               for (_j = 0, _len1 = n.length; _j < _len1; _j++) {
                 cn = n[_j];
                 _results1.push(AC.MIDI.simple_play({
-                  channel: midi_chan || 1,
+                  channel: midi_chan,
                   pitch: cn.pitch.value,
                   velocity: cn.velocity,
                   duration: this.positioned_rval_to_ms(cn.position, cn.duration),

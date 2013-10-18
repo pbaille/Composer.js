@@ -38,25 +38,10 @@ define ["lib/core/base/Note", "lib/utils/Rational"], () ->
       
     "simple_play_end"  
 
-  root.line = (opt) ->
-
-  	channel= 143 + opt.channel || 144
-  	at= opt.at || 0
-
-  	time_position = 0
-
-  	#console.log opt.notes
-  	for n in opt.notes
-  	  AC.MIDI.play 
-  	    note: n 
-  	    at: time_position + at
-
-  	  if n.duration 
-  	  	dur = n.duration.toFloat() 
-  	  else	
-  	  	dur = n[0].duration.toFloat() 
-
-  	  time_position += dur * 1000  
+  root.all_off = (chan) ->
+    channel = 143 + chan || 144
+    for i in [0..127]
+      midiOut.send [channel , i, 0], window.performance.now()
 
   return root  
 

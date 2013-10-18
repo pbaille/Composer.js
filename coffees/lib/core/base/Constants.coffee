@@ -105,6 +105,8 @@ define ["lib/utils/Rational","lib/Utils/Array_adds", "vendors/ruby", "vendors/un
     "T+"   : 9
     "Talt" : 6
 
+  MK.PASSING_FUNCTIONS= ["sd","dd+","dd","cd","cu","du","du+","su"]  
+
   MK.DEGREES_NAMES= [
     {0: "R"}
     {1: "m2", 2: "M2", 3: "#2"}

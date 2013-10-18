@@ -41,6 +41,7 @@ require ["jquery", "jasmine-html"], ($, jasmine) ->
     "spec/Array_adds.spec"
     "spec/AbstractMode.spec"
     "spec/Mode.spec"
+    "spec/MelodicContext.spec"
     "spec/Constants.spec"
     "spec/Domain.spec"
     "spec/HGen.spec"

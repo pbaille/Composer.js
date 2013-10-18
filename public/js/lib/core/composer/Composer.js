@@ -13,7 +13,7 @@
     HGen = AC.Core.HGen;
     return root.Composer = (function() {
       function Composer(opt) {
-        if (!opt) {
+        if (opt == null) {
           opt = {};
         }
         this.strategy = this.set_strategy(opt.strategy);
@@ -23,6 +23,7 @@
         this.rgen.composer = this.mgen.composer = this.hgen.composer = this;
         this.ahead = new RVal(0);
         this.advance = opt.advance || new RVal(2);
+        this.track = void 0;
       }
 
       Composer.prototype.head_position = function() {
@@ -38,7 +39,7 @@
             return (_ref1 = this.mgen)[d.method_name].apply(_ref1, d.args);
           case "harmonic":
             (_ref2 = this.hgen)[d.method_name].apply(_ref2, d.args);
-            return this.mgen.set_mode(this.hgen.current);
+            return this.mgen.set_melodic_context(this.hgen.current);
         }
       };
 
@@ -63,7 +64,7 @@
             _results = [];
             for (_i = 0, _len = line.length; _i < _len; _i++) {
               x = line[_i];
-              _results.push(timeline.score.push(x));
+              _results.push(_this.track.score.push(x));
             }
             return _results;
           };

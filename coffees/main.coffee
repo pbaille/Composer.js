@@ -31,6 +31,7 @@ require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jq
     RGen = AC.Core.RGen
     TimeLine = AC.Core.TimeLine
     RVal = AC.Core.RVal
+    Note = AC.Core.Note
     Mode = AC.Core.Mode
     Bar = AC.Core.Bar
     Track = AC.Core.Track
@@ -39,6 +40,7 @@ require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jq
   
     window.timeline = new TimeLine
       cycle: true
+
 
     bar = new Bar 
       beats: 4
@@ -71,10 +73,11 @@ require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jq
           type: "rythmic"
           method_name: "set_prob_array"
           args:[ 
-            [# [ {rval: new RVal(1)  , occ: 1 }
-            #   {rval: new RVal(1,2), occ: 1 }
-              # {rval: new RVal(1,4), occ: 1 }
+            [
+              # {rval: new RVal(1,2), occ: 1 }
               {rval: new RVal(1,4), occ: 4 }
+              # {rval: new RVal(1,3), occ: 1 }
+              # {rval: new RVal(1,6), occ: 4 }
 
             ]
           ]
@@ -86,24 +89,26 @@ require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jq
           method_name: "abs_move"
           args: ["T",1] #SD mode 1st degree (ex: in C Lyd => F Lyd)
 
+        # new Directive
+        #   position: new Position {cycle: 0, bar: 0, sub: new RVal 1,16}
+        #   type: "melodic"
+        #   method_name: "set_degrees_functions"
+        #   args: [{root: "disabled", second: "disabled", fifth:"disabled"}]
+
         new Directive
           position: new Position {cycle: 0, bar: 1, sub: new RVal 0}
           type: "harmonic"
           method_name: "abs_move"
           args: ["SD-",1] #SD mode 1st degree (ex: in C Lyd => F Lyd)
 
-        # new Directive
-        #   position: new Position {cycle: 0, bar: 2, sub: new RVal 0}
-        #   type: "harmonic"
-        #   method_name: "abs_move"
-        #   args: ["T-",1]
-
-        # new Directive
-        #   position: new Position {cycle: 0, bar: 3, sub: new RVal 0}
-        #   type: "harmonic"
-        #   method_name: "abs_move"
-        #   args: ["SDalt",1] 
       ]
+
+      # add hard coded notes (for bass)
+      midi_events:
+        notes:[
+          new Note 48,100, new RVal(4), new Position({bar: 0})
+          new Note 44,100, new RVal(4), new Position({bar: 1})
+        ]
 
     timeline.tracks.push track1 
 

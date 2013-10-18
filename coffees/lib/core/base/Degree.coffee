@@ -9,7 +9,7 @@ define ["lib/core/base/Constants"], () ->
 
   class root.Degree
 
-    @NAME_DIST_MAP= {"m2":1,"M2":2,"#2":3,"o3":2,"m3":3,"M3":4,"#3":5,"b4":4,"P4":5,"+4":6,"b5":6,"P5":7,"+5":8,"m6":8,"M6":9,"#6":10,"o7":9,"m7":10,"M7":11}
+    @NAME_DIST_MAP= {"R":0,"m2":1,"M2":2,"#2":3,"o3":2,"m3":3,"M3":4,"#3":5,"b4":4,"P4":5,"+4":6,"b5":6,"P5":7,"+5":8,"m6":8,"M6":9,"#6":10,"o7":9,"m7":10,"M7":11}
     @DEFAULTS= {"root" : "R ", "second" : "M2", "third" : "M3", "fourth" : "P4", "fifth" : "P5", "sixt" : "M6", "seventh" : "M7"}
     @ALTERATIONS=
       root: 
@@ -51,6 +51,17 @@ define ["lib/core/base/Constants"], () ->
         return new Degree new_name
       else
         return undefined
+
+    eq: (other_deg) ->
+      if @dist == other_deg.dist and @name == other_deg.name 
+        return true
+      else false 
+      
+    dist_up_to: (other_deg) ->      
+      return (other_deg.dist - @dist + 12)%12
+
+    dist_down_to: (other_deg) ->      
+      return (@dist - other_deg.dist + 12)%12
 
     @alt_map: ->
       dam= {}

@@ -85,6 +85,7 @@
       "T+": 9,
       "Talt": 6
     };
+    MK.PASSING_FUNCTIONS = ["sd", "dd+", "dd", "cd", "cu", "du", "du+", "su"];
     MK.DEGREES_NAMES = [
       {
         0: "R"

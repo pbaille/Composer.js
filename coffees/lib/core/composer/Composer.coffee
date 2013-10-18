@@ -20,7 +20,7 @@ define [
 
     constructor: (opt) ->    
       #temp
-      opt = {} unless opt
+      opt ?= {} 
 
       @strategy = @set_strategy opt.strategy #global strategy (way that generators are used together etc...)
 
@@ -34,6 +34,7 @@ define [
 
       @ahead = new RVal 0
       @advance = opt.advance || new RVal 2 #default advance of 2 beats
+      @track = undefined #assign in track constructor
 
     head_position: ->
       timeline.position.plus @ahead  
@@ -44,9 +45,9 @@ define [
         when "melodic"  then @mgen[d.method_name](d.args...)  
         when "harmonic" 
           @hgen[d.method_name](d.args...) 
-          @mgen.set_mode(@hgen.current) #update mgen mode 
+          @mgen.set_melodic_context(@hgen.current) #update mgen mode
+          #console.log @mgen.mode.name 
 
-        #when "dynamic"  then @dgen[d.method_name](d.args...)  
 
     tic: ->
       # temp # call #generate on each generator , when @strategy will be implemented, 
@@ -63,7 +64,7 @@ define [
           rythmn_line = @rgen.generate()
           line = @mgen.melodize(rythmn_line)
           timeline.play_line line 
-          timeline.score.push x for x in line #append line to score
+          @track.score.push x for x in line #append line to score
             
 
 

@@ -40,25 +40,12 @@
       midiOut.send([channel, pitch, 0], at + duration);
       return "simple_play_end";
     };
-    root.line = function(opt) {
-      var at, channel, dur, n, time_position, _i, _len, _ref, _results;
-      channel = 143 + opt.channel || 144;
-      at = opt.at || 0;
-      time_position = 0;
-      _ref = opt.notes;
+    root.all_off = function(chan) {
+      var channel, i, _i, _results;
+      channel = 143 + chan || 144;
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        n = _ref[_i];
-        AC.MIDI.play({
-          note: n,
-          at: time_position + at
-        });
-        if (n.duration) {
-          dur = n.duration.toFloat();
-        } else {
-          dur = n[0].duration.toFloat();
-        }
-        _results.push(time_position += dur * 1000);
+      for (i = _i = 0; _i <= 127; i = ++_i) {
+        _results.push(midiOut.send([channel, i, 0], window.performance.now()));
       }
       return _results;
     };

@@ -26,7 +26,6 @@ define [], () ->
   
     return result                        # Return the prime factors
   
-  return AC.Utils
 
   root.clone = (obj) ->
     if not obj? or typeof obj isnt 'object'
@@ -49,3 +48,15 @@ define [], () ->
       newInstance[key] = clone obj[key]
   
     return newInstance
+
+  root.merge = (objects...)->
+    res = {}
+    for o in objects
+      for k,v of o
+        res[k]= v
+    return res
+
+  return AC.Utils
+  
+
+

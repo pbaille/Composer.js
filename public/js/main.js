@@ -34,10 +34,11 @@
       return new AC.Utils.Rational(n, d);
     };
     return jQuery(function($) {
-      var Bar, Directive, Mode, Position, RGen, RVal, TimeLine, Track, bar, track1;
+      var Bar, Directive, Mode, Note, Position, RGen, RVal, TimeLine, Track, bar, track1;
       RGen = AC.Core.RGen;
       TimeLine = AC.Core.TimeLine;
       RVal = AC.Core.RVal;
+      Note = AC.Core.Note;
       Mode = AC.Core.Mode;
       Bar = AC.Core.Bar;
       Track = AC.Core.Track;
@@ -91,7 +92,16 @@
             method_name: "abs_move",
             args: ["SD-", 1]
           })
-        ]
+        ],
+        midi_events: {
+          notes: [
+            new Note(48, 100, new RVal(4), new Position({
+              bar: 0
+            })), new Note(44, 100, new RVal(4), new Position({
+              bar: 1
+            }))
+          ]
+        }
       });
       return timeline.tracks.push(track1);
     });

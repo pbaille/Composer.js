@@ -11,7 +11,7 @@
       it("initialize", function() {
         return expect(new MGen()).toBeTruthy;
       });
-      return it("set_current_pitch", function() {
+      it("set_current_pitch", function() {
         var mg;
         mg = new MGen({
           bounds: [60, 72]
@@ -19,6 +19,16 @@
         mg.set_current_pitch("C#1");
         expect(mg.current_pitch).toEqual(new Pitch("C1"));
         return expect(mg.current_index).toEqual(7);
+      });
+      return it("get_current_degree", function() {
+        var mg;
+        mg = new MGen({
+          bounds: [60, 72]
+        });
+        mg.set_current_pitch("C#1");
+        expect(mg.get_current_degree().generic_name).toBe('root');
+        mg.set_current_pitch("F#0");
+        return expect(mg.get_current_degree().generic_name).toBe('fourth');
       });
     });
   });

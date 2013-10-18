@@ -56,7 +56,6 @@ define [
       #init speed
       @speed = (60000 / @current_bar().bpm) * @current_bar().resolution.toFloat()
 
-      #@emitter.trigger('start', [@] ) #pass to timeline object to listeners
       @tic() 
 
     
@@ -77,14 +76,12 @@ define [
 
       return
   
-    stop: () ->
-      # if @bpm #check if 'this' refer to Metronome instance
-      #   @is_on = false
-      # else
-      #   console.log "this uncorrectly binded, please don't use #stop directly as callback" 
-
-      # for l in @listeners  
-      #   l.stop()
+    stop:  ->
+      @is_on = false
+      for t in @tracks
+        t.reset()
+        #AC.MIDI.all_off()
+        #t.composer.ahead = new RVal 0
 
     check_precision: () ->		
       real = window.performance.now() - @origin_point	     
@@ -109,35 +106,24 @@ define [
     ########## PLAY ##################
 
     # line => array of Note or [Note,Note,...](chord)
-    play_line: (line, midi_chan) ->  
+    play_line: (line, midi_chan = 1) ->  
 
       line = [line] unless line instanceof Array # if single note wrap it
 
       for n in line
         if n instanceof Note
           AC.MIDI.simple_play
-            channel: midi_chan || 1
+            channel: midi_chan
             pitch: n.pitch.value
             velocity: n.velocity
             duration: @positioned_rval_to_ms(n.position, n.duration)
             at: n.position.to_performance_time()
-
-          # console.log "*********************************************"
-          # console.log n
-          # console.log "duration"
-          # console.log @positioned_rval_to_ms(n.position, n.duration) 
-          # console.log "position"
-          # console.log n.position.toString()
-          # console.log "perf_time"
-          # console.log n.position.to_performance_time() 
-          # console.log "*********************************************"
-
              
         #n must be a chord ([Note,Note,...])  
         else
           for cn in n
             AC.MIDI.simple_play
-              channel: midi_chan || 1
+              channel: midi_chan
               pitch: cn.pitch.value
               velocity: cn.velocity
               duration: @positioned_rval_to_ms(cn.position, cn.duration)

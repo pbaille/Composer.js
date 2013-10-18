@@ -107,12 +107,12 @@
 
       Mode.prototype.degrees_calc = function() {
         var i, x, _i, _len, _ref, _results;
-        this.degrees = [];
-        _ref = this.abstract.functs.slice(1, 8);
+        this.degrees = {};
+        _ref = this.abstract.functs;
         _results = [];
         for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
           x = _ref[i];
-          _results.push(this.degrees.push(new Degree(MK.ABSTRACT_DEGREES[i + 1], x)));
+          _results.push(this.degrees[MK.ABSTRACT_DEGREES[i]] = new Degree(MK.ABSTRACT_DEGREES[i], x));
         }
         return _results;
       };
@@ -250,6 +250,10 @@
 
       Mode.prototype.mother_mode = function() {
         return new Mode(this.mother.name);
+      };
+
+      Mode.prototype.degree_int = function(degree) {
+        return (degree.dist + this.root.int) % 12;
       };
 
       return Mode;

@@ -12,6 +12,7 @@
     MK = root.MK;
     return root.Degree = (function() {
       Degree.NAME_DIST_MAP = {
+        "R": 0,
         "m2": 1,
         "M2": 2,
         "#2": 3,
@@ -106,6 +107,22 @@
         } else {
           return void 0;
         }
+      };
+
+      Degree.prototype.eq = function(other_deg) {
+        if (this.dist === other_deg.dist && this.name === other_deg.name) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      Degree.prototype.dist_up_to = function(other_deg) {
+        return (other_deg.dist - this.dist + 12) % 12;
+      };
+
+      Degree.prototype.dist_down_to = function(other_deg) {
+        return (this.dist - other_deg.dist + 12) % 12;
       };
 
       Degree.alt_map = function() {

@@ -10,6 +10,7 @@ define [
   "#{base_path}/Constants"
   "#{base_path}/AbstractMode"
   "#{base_path}/Mode"
+  "#{base_path}/MelodicContext"
   "#{base_path}/Domain"
 
   "#{composer_path}/melody/MGen"

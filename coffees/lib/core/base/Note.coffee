@@ -116,7 +116,14 @@ define ["lib/utils/Rational","lib/core/base/RVal","lib/core/structure/Position",
       @value = @pitchClass.int + ( @octave + 5 ) * 12
 
     dist_to: (other_pitch) ->
-      return @value - other_pitch.value  
+      return @value - other_pitch.value 
+
+    transposed: (dist) ->
+      new Pitch @value + dist 
+
+    # maybe take care of enharmony (equals values but different names)
+    eq: (pitch) ->
+      @value == pitch.value    
 
 
 
