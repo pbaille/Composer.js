@@ -53,8 +53,7 @@ define [
       # temp # call #generate on each generator , when @strategy will be implemented, 
       # the order of called generators should change depending on it , 
       # and other directives should be send to generators
-      if @ahead.lt @advance
-        @strategy()
+      @strategy() if @ahead.lt @advance
 
       @ahead.subtract timeline.resolution 
 

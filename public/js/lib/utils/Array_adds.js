@@ -12,8 +12,9 @@
       rand_index = Math.floor(Math.random() * arr.length);
       return arr[rand_index];
     };
-    _a.scramble = function(arr) {
-      var counter, index, temp;
+    _a.scramble = function(_arr) {
+      var arr, counter, index, temp;
+      arr = _arr.slice(0);
       counter = arr.length;
       temp = void 0;
       index = void 0;

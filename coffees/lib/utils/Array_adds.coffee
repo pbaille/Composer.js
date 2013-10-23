@@ -10,7 +10,8 @@ define ["vendors/ruby"], () ->
     rand_index = Math.floor(Math.random()*(arr.length))
     return arr[rand_index]
   
-  _a.scramble = (arr) ->
+  _a.scramble = (_arr) ->
+    arr = _arr.slice 0
     counter = arr.length
     temp= undefined
     index= undefined

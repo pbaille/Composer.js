@@ -146,8 +146,10 @@
           type = passing_set[_i];
           if (type[type.length - 1] === "n") {
             result.push(target_degree.dist_down_to(degree_profile[type]) * -1);
-          } else {
+          } else if (type[type.length - 1] === "p") {
             result.push(target_degree.dist_up_to(degree_profile[type]));
+          } else {
+            result.push(0);
           }
         }
         return result;

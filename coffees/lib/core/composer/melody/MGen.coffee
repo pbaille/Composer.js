@@ -32,9 +32,9 @@ define [
       @current_index = opt.current_index || @pitches.indexOf @current_pitch #index of @current_pitch in @pitches
 
       @melodicPatternGen = new MelodicPatternGen
-        steps_array: [-4,-3,3,4]
+        steps_array: [-4,-3,-2,-1,1,2,3,4]
         iterations: [2,3,4]
-        cycle_step: [-3,-2,-1,1,2,3]
+        cycle_step: [-7,-6,-5,-4,-3,-2,-1,1,2,3,4,5,6,7]
         pattern_length: [2,3,4,5,6] 
 
       if opt.strategy #define #next method in respect of given strategy
@@ -103,7 +103,10 @@ define [
         return false 
 
     bounds_from_current_pitch: ->
-      [@current_index * -1, @pitches.length - @current_index - 1]     
+      [@current_index * -1, @pitches.length - @current_index - 1]    
+
+    strategy_is_done: (args... )->
+      console.log "strategy is done"
 
     ########################
     ###### strategies ######
@@ -204,27 +207,39 @@ define [
           @set_current_pitch(_a.sample @main_pitches) 
           #get degree of current_pitch
           degree = @get_current_degree()
-          #get degree passing profile
-          profile = @passing_profile[degree.name]
           #compute a possible passing_set
-          passing_set = _a.sample profile.passing_combinations[passing_size]
+          passing_set = _a.sample(profile.passing_combinations[passing_size])
           passing_set = _a.scramble passing_set
+
+          # add target code
+          passing_set.push "self"
+          #if broderie then prepend "self"
+          passing_set = ["self"].concat(passing_set) if broderie
+          
           #convert it to 'dist_from_target_array'
           dist_from_target_array = @passing_set_to_dist_from_target_array degree,passing_set
-          # add target code
-          dist_from_target_array.push 0
-          # if broderie add target code at begining
-          dist_from_target_array = [0].concat dist_from_target_array if broderie
 
-          #console.log dist_from_target_array
-          #console.log passing_set
+          # console.log dist_from_target_array
+          # console.log passing_set
 
-        # debugger
         pitch_val = @current_pitch.value + dist_from_target_array.splice(0,1)[0]
         pitch = new Pitch pitch_val 
         #console.log pitch
         return pitch
 
+    simple_passing: (target, passing_set) -> #(Pitch)target (Array (string)passing_types)passing_set
+
+      degree = @get_current_degree()
+      dist_from_target_array = @passing_set_to_dist_from_target_array degree,passing_set
+
+      @next= =>
+        if dist_from_target_array.length == 0
+          return @strategy_is_done()
+        else
+          pitch_val = @current_pitch.value + dist_from_target_array.splice(0,1)[0]
+          return new Pitch pitch_val 
+
+            
 
 
 

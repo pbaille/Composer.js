@@ -32,9 +32,11 @@ define [
       @score = [] # past events are appended in this array while execution
 
     tic: ->
+      # at start of cycle register hard coded midi events
       if timeline.position.bar == 0 and timeline.position.sub.eq new RVal 0
         timeline.play_line @midi_events.notes
         note.position.cycle++ for note in @midi_events.notes
+        
       while @directives[0].position.le @composer.head_position()
       	@composer.apply_directive @directives[0] # send first directive to composer
       	@directives[0].position.cycle++ #increment cycle

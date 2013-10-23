@@ -128,9 +128,12 @@ define [
       result = []
       #debugger
       for type in passing_set
-      	if type[type.length-1] == "n" #direction == down
+        if type[type.length-1] == "n" #direction == down
           result.push(target_degree.dist_down_to(degree_profile[type]) * -1)
-        else result.push target_degree.dist_up_to(degree_profile[type])
+        else if type[type.length-1] == "p" #direction is up
+          result.push target_degree.dist_up_to(degree_profile[type])
+        else #type is self (target)
+          result.push 0
       return result  
 
     
