@@ -153,6 +153,10 @@
         this.position = position || new Position();
       }
 
+      Note.prototype.clone = function() {
+        return new root.Note(this.pitch.value, this.velocity, this.duration.clone(), this.position.clone());
+      };
+
       return Note;
 
     })();

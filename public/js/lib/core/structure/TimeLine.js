@@ -118,46 +118,6 @@
         return _results;
       };
 
-      TimeLine.prototype.play_line = function(line, midi_chan) {
-        var cn, n, _i, _len, _results;
-        if (midi_chan == null) {
-          midi_chan = 1;
-        }
-        if (!(line instanceof Array)) {
-          line = [line];
-        }
-        _results = [];
-        for (_i = 0, _len = line.length; _i < _len; _i++) {
-          n = line[_i];
-          if (n instanceof Note) {
-            _results.push(AC.MIDI.simple_play({
-              channel: midi_chan,
-              pitch: n.pitch.value,
-              velocity: n.velocity,
-              duration: this.positioned_rval_to_ms(n.position, n.duration),
-              at: n.position.to_performance_time()
-            }));
-          } else {
-            _results.push((function() {
-              var _j, _len1, _results1;
-              _results1 = [];
-              for (_j = 0, _len1 = n.length; _j < _len1; _j++) {
-                cn = n[_j];
-                _results1.push(AC.MIDI.simple_play({
-                  channel: midi_chan,
-                  pitch: cn.pitch.value,
-                  velocity: cn.velocity,
-                  duration: this.positioned_rval_to_ms(cn.position, cn.duration),
-                  at: cn.position.to_performance_time()
-                }));
-              }
-              return _results1;
-            }).call(this));
-          }
-        }
-        return _results;
-      };
-
       return TimeLine;
 
     })();

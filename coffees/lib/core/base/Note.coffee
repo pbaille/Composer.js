@@ -134,6 +134,9 @@ define ["lib/utils/Rational","lib/core/base/RVal","lib/core/structure/Position",
       @velocity = vel
       @duration = duration || new RVal 1
       @position = position || new Position()
+
+    clone: ->
+      new root.Note @pitch.value, @velocity, @duration.clone(), @position.clone()
   
   #########################################################################
   # return root

@@ -1,6 +1,9 @@
 define [
   "lib/core/structure/Position"
   "lib/core/composer/Composer"
+  "lib/midi/play"
+  "vendors/ruby"
+  "lib/utils/Utils"
   ], ->
 
   if typeof global != "undefined" && global != null 
@@ -10,7 +13,7 @@ define [
 
   Position= AC.Core.Position
   RVal= AC.Core.RVal
-  Composer= AC.Core.Composer  
+  Composer= AC.Core.Composer 
 
   class root.Track
 
@@ -30,18 +33,23 @@ define [
       @composer.track = this
 
       @score = [] # past events are appended in this array while execution
+      @queue = [] # queue of note to play
 
     tic: ->
+
       # at start of cycle register hard coded midi events
-      if timeline.position.bar == 0 and timeline.position.sub.eq new RVal 0
-        timeline.play_line @midi_events.notes
-        note.position.cycle++ for note in @midi_events.notes
-        
+      # if timeline.position.bar == 0 and timeline.position.sub.eq new RVal 0
+      #   AC.MIDI.play_line @midi_events.notes
+      #   note.position.cycle++ for note in @midi_events.notes
+
       while @directives[0].position.le @composer.head_position()
       	@composer.apply_directive @directives[0] # send first directive to composer
       	@directives[0].position.cycle++ #increment cycle
       	@directives = _a.rotate(@directives,1) #send it to the last index  
       @composer.tic()	
+
+      @play()
+
 
     sort_directives: ->
       @directives.sort (a,b) ->
@@ -61,6 +69,22 @@ define [
 
     print_score: ->
       @score.map (x) ->
-        "p:#{x.pitch.value} d:#{x.duration.numer}/#{x.duration.denom} at:#{x.position.sub.numer}/#{x.position.sub.denom} "      
-      	
+        "p:#{x.pitch.value} d:#{x.duration.numer}/#{x.duration.denom} at:#{x.position.sub.numer}/#{x.position.sub.denom} "   
+
+    
+    play: ->
+      line_to_play = []
+      while @queue[0].position.le timeline.position.plus new RVal 1,2
+      	line_to_play.push @queue.shift()
+
+      while @midi_events.notes[0].position.le timeline.position.plus new RVal 1,2
+
+        line_to_play.push @midi_events.notes[0].clone()
+        @midi_events.notes[0].position.cycle++
+        @midi_events.notes = _a.rotate(@midi_events.notes,1)
+
+      if line_to_play.length isnt 0
+        AC.MIDI.play_line line_to_play 
+
+        
         

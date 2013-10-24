@@ -22,6 +22,10 @@
         RVal.__super__.constructor.call(this, num, den);
       }
 
+      RVal.prototype.clone = function() {
+        return new root.RVal(this.numer, this.denom);
+      };
+
       RVal.prototype.to_ms = function(bpm) {
         return this.times(new Rational(60, bpm)).toFloat() * 1000;
       };

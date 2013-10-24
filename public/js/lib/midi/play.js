@@ -9,26 +9,6 @@
     } else {
       root = window.AC.MIDI;
     }
-    root.play = function(opt) {
-      var at, channel, n, notes, tempo, _i, _len;
-      if (!opt) {
-        opt = {};
-      }
-      tempo = opt.tempo || 60;
-      notes = opt.note || new Note("C0");
-      channel = 143 + opt.channel || 144;
-      at = opt.at || window.performance.now();
-      if (!notes.length) {
-        notes = [notes];
-      }
-      for (_i = 0, _len = notes.length; _i < _len; _i++) {
-        n = notes[_i];
-        console.log("duration: " + n.duration.toFloat() * 1000);
-        midiOut.send([channel, n.pitch.value, n.velocity], at);
-        midiOut.send([channel, n.pitch.value, 0], at + n.duration.toFloat() * 1000 - 1);
-      }
-      return "play_end";
-    };
     root.simple_play = function(opt) {
       var at, channel, duration, pitch, vel;
       pitch = opt.pitch;
@@ -39,6 +19,45 @@
       midiOut.send([channel, pitch, vel], at);
       midiOut.send([channel, pitch, 0], at + duration);
       return "simple_play_end";
+    };
+    root.play_line = function(line, midi_chan) {
+      var cn, n, _i, _len, _results;
+      if (midi_chan == null) {
+        midi_chan = 1;
+      }
+      if (!(line instanceof Array)) {
+        line = [line];
+      }
+      _results = [];
+      for (_i = 0, _len = line.length; _i < _len; _i++) {
+        n = line[_i];
+        if (n instanceof Note) {
+          _results.push(AC.MIDI.simple_play({
+            channel: midi_chan,
+            pitch: n.pitch.value,
+            velocity: n.velocity,
+            duration: n.position.rval_to_ms(n.duration),
+            at: n.position.to_performance_time()
+          }));
+        } else {
+          _results.push((function() {
+            var _j, _len1, _results1;
+            _results1 = [];
+            for (_j = 0, _len1 = n.length; _j < _len1; _j++) {
+              cn = n[_j];
+              _results1.push(AC.MIDI.simple_play({
+                channel: midi_chan,
+                pitch: cn.pitch.value,
+                velocity: cn.velocity,
+                duration: cn.position.rval_to_ms(cn.duration),
+                at: cn.position.to_performance_time()
+              }));
+            }
+            return _results1;
+          })());
+        }
+      }
+      return _results;
     };
     root.all_off = function(chan) {
       var channel, i, _i, _results;

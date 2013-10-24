@@ -62,8 +62,10 @@ define [
         return =>
           rythmn_line = @rgen.generate()
           line = @mgen.melodize(rythmn_line)
-          timeline.play_line line 
-          @track.score.push x for x in line #append line to score
+          #timeline.play_line line 
+          for x in line #append line to score
+            @track.score.push x 
+            @track.queue.push x
             
 
 

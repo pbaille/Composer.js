@@ -13,6 +13,9 @@ define ["lib/utils/Rational","lib/utils/Utils", "vendors/ruby"], () ->
     constructor: (num, den = 1) ->
       super(num, den)
 
+    clone: ->
+      new root.RVal @numer, @denom
+
     to_ms: (bpm) ->
       @times(new Rational(60,bpm)).toFloat() * 1000 
 

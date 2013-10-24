@@ -105,29 +105,29 @@ define [
 
     ########## PLAY ##################
 
-    # line => array of Note or [Note,Note,...](chord)
-    play_line: (line, midi_chan = 1) ->  
+    # # line => array of Note or [Note,Note,...](chord)
+    # play_line: (line, midi_chan = 1) ->  
 
-      line = [line] unless line instanceof Array # if single note wrap it
+    #   line = [line] unless line instanceof Array # if single note wrap it
 
-      for n in line
-        if n instanceof Note
-          AC.MIDI.simple_play
-            channel: midi_chan
-            pitch: n.pitch.value
-            velocity: n.velocity
-            duration: @positioned_rval_to_ms(n.position, n.duration)
-            at: n.position.to_performance_time()
+    #   for n in line
+    #     if n instanceof Note
+    #       AC.MIDI.simple_play
+    #         channel: midi_chan
+    #         pitch: n.pitch.value
+    #         velocity: n.velocity
+    #         duration: @positioned_rval_to_ms(n.position, n.duration)
+    #         at: n.position.to_performance_time()
              
-        #n must be a chord ([Note,Note,...])  
-        else
-          for cn in n
-            AC.MIDI.simple_play
-              channel: midi_chan
-              pitch: cn.pitch.value
-              velocity: cn.velocity
-              duration: @positioned_rval_to_ms(cn.position, cn.duration)
-              at: cn.position.to_performance_time()
+    #     #n must be a chord ([Note,Note,...])  
+    #     else
+    #       for cn in n
+    #         AC.MIDI.simple_play
+    #           channel: midi_chan
+    #           pitch: cn.pitch.value
+    #           velocity: cn.velocity
+    #           duration: @positioned_rval_to_ms(cn.position, cn.duration)
+    #           at: cn.position.to_performance_time()
              
   
 
