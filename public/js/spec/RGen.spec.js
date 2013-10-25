@@ -57,7 +57,7 @@
             }
           ]);
         });
-        return it("with tl_pos at 1/3", function() {
+        it("with tl_pos at 1/3", function() {
           timeline.position = new Position({
             cycle: 0,
             bar: 0,
@@ -69,6 +69,35 @@
               occ: 1
             }
           ]);
+        });
+        return it("rvals_allowed_permutations_at", function() {
+          var aze, rapa;
+          timeline.tracks[0].composer.rgen = new RGen({
+            prob_array: [
+              {
+                rval: new RVal(1, 2),
+                occ: 1
+              }, {
+                rval: new RVal(1, 4),
+                occ: 1
+              }, {
+                rval: new RVal(1, 3),
+                occ: 1
+              }, {
+                rval: new RVal(1, 6),
+                occ: 1
+              }
+            ]
+          });
+          rg = timeline.tracks[0].composer.rgen;
+          aze = rg.rythmn_val_combinations(4, new RVal(1));
+          console.log("aze[0] = " + aze[0]);
+          rapa = rg.rvals_allowed_permutations_at(aze[0], new Position({
+            sub: new RVal(1, 6)
+          }));
+          expect(rapa).toEqual([[new RVal(1, 6), new RVal(1, 6), new RVal(1, 2), new RVal(1, 6)]]);
+          rapa = rg.rvals_allowed_permutations_at(aze[0], new Position());
+          return expect(rapa).toEqual([[new RVal(1, 2), new RVal(1, 6), new RVal(1, 6), new RVal(1, 6)], [new RVal(1, 6), new RVal(1, 6), new RVal(1, 6), new RVal(1, 2)]]);
         });
       });
     });

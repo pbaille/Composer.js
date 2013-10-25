@@ -2,7 +2,7 @@ define [
   "lib/core/base/RVal"
   "lib/core/base/Note"
   "lib/utils/Rational"
-  "lib/utils/Utils"
+  "lib/utils/index"
   "lib/midi/play"
   "vendors/ruby"
   ], ->
@@ -65,7 +65,6 @@ define [
       while @composer.ahead.lt @composer.advance 
         results.push @next()
 
-      #@melodize(results) if results #temp just to test
       return results
 
     next: ->
@@ -123,6 +122,104 @@ define [
 
     # head_position: ->
     #   @timeline.position.plus(@ahead)
+
+    # compute all rat_arr combination of "size" size that sums to sum 
+    rat_dom_part: (rat_arr,size,sum) ->
+
+      # all denoms array
+      denoms = rat_arr.concat(sum).map (x) ->
+        x.denom
+      # find least common multiplier for domain elems and sum
+      lcm = AC.Utils.lcmm denoms 
+      # multiply all domain elems by it and cast to int 
+      dom = rat_arr.map (x)->
+        x.multiply new RVal lcm
+        x.toInt()
+      # sort new dom
+      dom = _a.sort dom  
+      # compute new sum (sum * lcm)
+      msum = sum.multiply(new RVal(lcm)).toInt()
+
+      # regular call to DomainPartition since all elems are now integers
+      dp = new AC.Utils.DomainPartition dom,size,msum
+
+      results = []
+      #remap integers to rationals and append them to results array
+      for res in dp.results
+        results.push res.map (x) -> new RVal x,lcm
+
+      return results 
+
+    # call rat_dom_part with @array.rval(s)
+    rythmn_val_combinations: (size, sum) -> # (int)size (RVal)sum
+      #console.log @array
+      rvals = @array.map (x) ->
+        x.rval
+      return @rat_dom_part(rvals,size,sum)
+
+    rvals_allowed_permutations_at: (rvals, start_position) -> #(array of RVal(s))rvals (Position)start_position
+      
+      # helpers
+      uniq_rvals_calc = ->
+        result= []
+        for rv in rvals
+          if result.length is 0
+            result.push rv
+          else  
+            already_in = false
+            for urv in result
+              already_in = true if rv.eq urv
+            result.push rv unless already_in
+        return result
+
+      remaining_rvals= (rvals_array) ->
+        #debugger
+        result = rvals.slice 0
+        for rv in rvals_array
+          for x,i in result
+            if x.eq rv
+              result.splice(i,1) 
+              break
+        return result    
+
+      #uniq rvals
+      uniq_rvals = uniq_rvals_calc()
+      
+
+      # 
+      results = []   
+      for i in [1..rvals.length]
+        #debugger
+        if i is 1
+          for rv in uniq_rvals
+            results.push [rv] if rv.is_allowed_at start_position
+        else
+          temp = []
+          for rv in uniq_rvals
+            for r in results
+              # compute current_position
+              current_position = start_position.clone()
+              current_position = current_position.plus(rv2) for rv2 in r
+
+              # check if rv is available in remaining_rvals
+              rv_is_available = false
+              for rem_val in remaining_rvals r
+                if rv.eq rem_val
+                  rv_is_available = true 
+                  break
+              # if on an available subdivision and stil available push it  
+              if rv.is_allowed_at(current_position) and rv_is_available
+                temp.push r.concat(rv) 
+
+          results = temp  
+            
+      return results    
+              
+
+
+          
+
+
 
 
 

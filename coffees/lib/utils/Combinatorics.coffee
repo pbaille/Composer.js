@@ -29,29 +29,20 @@ define ["vendors/ruby"], ->
             
       else if n > 1
     
-        #********* dom_selector ********
-        #is an previously rejected domain element can be authorized?...
-    
         if n != @size then start = arr[arr.length - n - 1] else start = @domain[0]
         dom_bounds= [start*(n-1),@domain[@domain.length - 1]*(n-1)]
         
         restricted_dom= []
         for x in @domain
-
-          if x < start 
-          	"nothing"
-          
-          else if @size-n > 0
-            temp = @sum - (_a.somme(arr[0..arr.length - n - 1]) + x)
-            if dom_bounds[0] <= temp and dom_bounds[1] >= temp
+          unless x < start 
+            if dom_bounds[0]+x <= @sum - sumSoFar <= dom_bounds[1]+x
               restricted_dom.push x
-            
-          else if dom_bounds[0] <= @sum+x and dom_bounds[1] >= @sum+x
-            restricted_dom.push x
             
         for i in restricted_dom
           _arr= arr.slice 0
           _arr[_arr.length - n] = i 
           @sumRecursive(n-1, sumSoFar + i, _arr)
+  
+       
 
           

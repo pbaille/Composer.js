@@ -55,7 +55,8 @@ require ["jquery", "jasmine-html"], ($, jasmine) ->
     "spec/Directive.spec"
     "spec/Combinatorics.spec"
     "spec/MelodicPattern.spec"
-
+    "spec/calcul.spec"
+     
     "spec/init"
   ]
 

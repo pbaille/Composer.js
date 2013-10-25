@@ -22,7 +22,7 @@
       }
 
       DomainPartition.prototype.sumRecursive = function(n, sumSoFar, arr) {
-        var dom_bounds, final_arr, i, restricted_dom, start, temp, x, _arr, _i, _j, _len, _len1, _ref, _results;
+        var dom_bounds, final_arr, i, restricted_dom, start, x, _arr, _i, _j, _len, _len1, _ref, _ref1, _results;
         if (n === 1) {
           if (this.sum - sumSoFar >= arr[arr.length - 2] && this.domain.indexOf(this.sum - sumSoFar) >= 0) {
             final_arr = arr.slice(0);
@@ -40,15 +40,10 @@
           _ref = this.domain;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             x = _ref[_i];
-            if (x < start) {
-              "nothing";
-            } else if (this.size - n > 0) {
-              temp = this.sum - (_a.somme(arr.slice(0, +(arr.length - n - 1) + 1 || 9e9)) + x);
-              if (dom_bounds[0] <= temp && dom_bounds[1] >= temp) {
+            if (!(x < start)) {
+              if ((dom_bounds[0] + x <= (_ref1 = this.sum - sumSoFar) && _ref1 <= dom_bounds[1] + x)) {
                 restricted_dom.push(x);
               }
-            } else if (dom_bounds[0] <= this.sum + x && dom_bounds[1] >= this.sum + x) {
-              restricted_dom.push(x);
             }
           }
           _results = [];

@@ -2,7 +2,7 @@
 (function() {
   var __slice = [].slice;
 
-  define(["lib/core/base/RVal", "lib/core/base/Note", "lib/utils/Rational", "lib/utils/Utils", "lib/midi/play", "vendors/ruby"], function() {
+  define(["lib/core/base/RVal", "lib/core/base/Note", "lib/utils/Rational", "lib/utils/index", "lib/midi/play", "vendors/ruby"], function() {
     var RVal, Rational, rat, root;
     if (typeof global !== "undefined" && global !== null) {
       root = global.AC.Core;
@@ -81,6 +81,118 @@
 
       RGen.prototype.resolve_head = function() {
         throw " have to implement Rgen#resolve_head ";
+      };
+
+      RGen.prototype.rat_dom_part = function(rat_arr, size, sum) {
+        var denoms, dom, dp, lcm, msum, res, results, _i, _len, _ref;
+        denoms = rat_arr.concat(sum).map(function(x) {
+          return x.denom;
+        });
+        lcm = AC.Utils.lcmm(denoms);
+        dom = rat_arr.map(function(x) {
+          x.multiply(new RVal(lcm));
+          return x.toInt();
+        });
+        dom = _a.sort(dom);
+        msum = sum.multiply(new RVal(lcm)).toInt();
+        dp = new AC.Utils.DomainPartition(dom, size, msum);
+        results = [];
+        _ref = dp.results;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          res = _ref[_i];
+          results.push(res.map(function(x) {
+            return new RVal(x, lcm);
+          }));
+        }
+        return results;
+      };
+
+      RGen.prototype.rythmn_val_combinations = function(size, sum) {
+        var rvals;
+        rvals = this.array.map(function(x) {
+          return x.rval;
+        });
+        return this.rat_dom_part(rvals, size, sum);
+      };
+
+      RGen.prototype.rvals_allowed_permutations_at = function(rvals, start_position) {
+        var current_position, i, r, rem_val, remaining_rvals, results, rv, rv2, rv_is_available, temp, uniq_rvals, uniq_rvals_calc, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _n, _ref, _ref1;
+        uniq_rvals_calc = function() {
+          var already_in, result, rv, urv, _i, _j, _len, _len1;
+          result = [];
+          for (_i = 0, _len = rvals.length; _i < _len; _i++) {
+            rv = rvals[_i];
+            if (result.length === 0) {
+              result.push(rv);
+            } else {
+              already_in = false;
+              for (_j = 0, _len1 = result.length; _j < _len1; _j++) {
+                urv = result[_j];
+                if (rv.eq(urv)) {
+                  already_in = true;
+                }
+              }
+              if (!already_in) {
+                result.push(rv);
+              }
+            }
+          }
+          return result;
+        };
+        remaining_rvals = function(rvals_array) {
+          var i, result, rv, x, _i, _j, _len, _len1;
+          result = rvals.slice(0);
+          for (_i = 0, _len = rvals_array.length; _i < _len; _i++) {
+            rv = rvals_array[_i];
+            for (i = _j = 0, _len1 = result.length; _j < _len1; i = ++_j) {
+              x = result[i];
+              if (x.eq(rv)) {
+                result.splice(i, 1);
+                break;
+              }
+            }
+          }
+          return result;
+        };
+        uniq_rvals = uniq_rvals_calc();
+        results = [];
+        for (i = _i = 1, _ref = rvals.length; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
+          if (i === 1) {
+            for (_j = 0, _len = uniq_rvals.length; _j < _len; _j++) {
+              rv = uniq_rvals[_j];
+              if (rv.is_allowed_at(start_position)) {
+                results.push([rv]);
+              }
+            }
+          } else {
+            temp = [];
+            for (_k = 0, _len1 = uniq_rvals.length; _k < _len1; _k++) {
+              rv = uniq_rvals[_k];
+              for (_l = 0, _len2 = results.length; _l < _len2; _l++) {
+                r = results[_l];
+                current_position = start_position.clone();
+                for (_m = 0, _len3 = r.length; _m < _len3; _m++) {
+                  rv2 = r[_m];
+                  current_position = current_position.plus(rv2);
+                }
+                rv_is_available = false;
+                _ref1 = remaining_rvals(r);
+                for (_n = 0, _len4 = _ref1.length; _n < _len4; _n++) {
+                  rem_val = _ref1[_n];
+                  if (rv.eq(rem_val)) {
+                    rv_is_available = true;
+                    break;
+                  }
+                }
+                if (rv.is_allowed_at(current_position) && rv_is_available) {
+                  temp.push(r.concat(rv));
+                }
+              }
+            }
+            results = temp;
+          }
+        }
+        return results;
       };
 
       return RGen;

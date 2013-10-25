@@ -38,7 +38,7 @@
     jasmineEnv.specFilter = function(spec) {
       return htmlReporter.specFilter(spec);
     };
-    specs = ["spec/RVal.spec", "spec/Note.spec", "spec/Interval.spec", "spec/Degree.spec", "spec/Array_adds.spec", "spec/AbstractMode.spec", "spec/Mode.spec", "spec/MelodicContext.spec", "spec/Constants.spec", "spec/Domain.spec", "spec/HGen.spec", "spec/Bar.spec", "spec/TimeLine.spec", "spec/RGen.spec", "spec/Position.spec", "spec/MGen.spec", "spec/Track.spec", "spec/Composer.spec", "spec/Directive.spec", "spec/Combinatorics.spec", "spec/MelodicPattern.spec", "spec/init"];
+    specs = ["spec/RVal.spec", "spec/Note.spec", "spec/Interval.spec", "spec/Degree.spec", "spec/Array_adds.spec", "spec/AbstractMode.spec", "spec/Mode.spec", "spec/MelodicContext.spec", "spec/Constants.spec", "spec/Domain.spec", "spec/HGen.spec", "spec/Bar.spec", "spec/TimeLine.spec", "spec/RGen.spec", "spec/Position.spec", "spec/MGen.spec", "spec/Track.spec", "spec/Composer.spec", "spec/Directive.spec", "spec/Combinatorics.spec", "spec/MelodicPattern.spec", "spec/calcul.spec", "spec/init"];
     return $(function() {
       return require(specs, function(spec) {
         return jasmineEnv.execute();

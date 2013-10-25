@@ -57,7 +57,11 @@ define ["lib/utils/Rational","lib/utils/Utils", "vendors/ruby"], () ->
       super(rat).toRVal() 
 
     minus: (rat)->
-      super(rat).toRVal()  
+      super(rat).toRVal() 
+       
+    # is this can be placed at this position (without polyrythmn...)
+    is_allowed_at: (position) -> #(Position)position
+      @allowed_subs().indexOf(position.sub.denom) >= 0
 
 
 

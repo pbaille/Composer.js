@@ -15,6 +15,8 @@
         this.midi_channel = opt.midi_channel || 1;
         this.directives = opt.directives || [];
         this.sort_directives();
+        this.composer = opt.composer || new Composer;
+        this.composer.track = this;
         if (opt.midi_events == null) {
           opt.midi_events = {};
         }
@@ -22,8 +24,6 @@
           notes: opt.midi_events.notes || [],
           messages: opt.midi_events.message || []
         };
-        this.composer = opt.composer || new Composer;
-        this.composer.track = this;
         this.score = [];
         this.queue = [];
       }

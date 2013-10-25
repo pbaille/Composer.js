@@ -84,6 +84,10 @@
         return RVal.__super__.minus.call(this, rat).toRVal();
       };
 
+      RVal.prototype.is_allowed_at = function(position) {
+        return this.allowed_subs().indexOf(position.sub.denom) >= 0;
+      };
+
       return RVal;
 
     })(Rational);

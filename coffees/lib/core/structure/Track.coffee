@@ -24,23 +24,18 @@ define [
       @directives= opt.directives || []
       @sort_directives() # sort directives based on their position
 
+      @composer= opt.composer || new Composer # the object that receive directives while execution and dispatch them to generators
+      @composer.track = this
+
       opt.midi_events ?= {}
       @midi_events=
         notes: opt.midi_events.notes || []
         messages: opt.midi_events.message || []
 
-      @composer= opt.composer || new Composer # the object that receive directives while execution and dispatch them to generators
-      @composer.track = this
-
       @score = [] # past events are appended in this array while execution
       @queue = [] # queue of note to play
 
     tic: ->
-
-      # at start of cycle register hard coded midi events
-      # if timeline.position.bar == 0 and timeline.position.sub.eq new RVal 0
-      #   AC.MIDI.play_line @midi_events.notes
-      #   note.position.cycle++ for note in @midi_events.notes
 
       while @directives[0].position.le @composer.head_position()
       	@composer.apply_directive @directives[0] # send first directive to composer
@@ -49,7 +44,6 @@ define [
       @composer.tic()	
 
       @play()
-
 
     sort_directives: ->
       @directives.sort (a,b) ->
@@ -71,17 +65,18 @@ define [
       @score.map (x) ->
         "p:#{x.pitch.value} d:#{x.duration.numer}/#{x.duration.denom} at:#{x.position.sub.numer}/#{x.position.sub.denom} "   
 
-    
     play: ->
       line_to_play = []
+
+      # composed events
       while @queue[0].position.le timeline.position.plus new RVal 1,2
       	line_to_play.push @queue.shift()
 
+      # hard coded events
       while @midi_events.notes[0].position.le timeline.position.plus new RVal 1,2
-
-        line_to_play.push @midi_events.notes[0].clone()
-        @midi_events.notes[0].position.cycle++
-        @midi_events.notes = _a.rotate(@midi_events.notes,1)
+        line_to_play.push @midi_events.notes[0].clone() #had to clone it before increment pos.cycle
+        @midi_events.notes[0].position.cycle++ #inc cycle for looping
+        @midi_events.notes = _a.rotate(@midi_events.notes,1) #send it to last index
 
       if line_to_play.length isnt 0
         AC.MIDI.play_line line_to_play 
