@@ -57,7 +57,6 @@ define [
       @speed = (60000 / @current_bar().bpm) * @current_bar().resolution.toFloat()
 
       @tic() 
-
     
       instance = =>
         
@@ -80,8 +79,6 @@ define [
       @is_on = false
       for t in @tracks
         t.reset()
-        #AC.MIDI.all_off()
-        #t.composer.ahead = new RVal 0
 
     check_precision: () ->		
       real = window.performance.now() - @origin_point	     
@@ -90,8 +87,8 @@ define [
       return result
 
     # compute the duration in ms of a positioned rythmic value (RVal)
-    positioned_rval_to_ms: (pos,rval) ->  
-      return pos.rval_to_ms(rval)
+    # positioned_rval_to_ms: (pos,rval) ->  
+    #   return pos.rval_to_ms(rval)
 
     ########## helpers ###############
     

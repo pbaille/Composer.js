@@ -65,6 +65,7 @@ define [
       @score.map (x) ->
         "p:#{x.pitch.value} d:#{x.duration.numer}/#{x.duration.denom} at:#{x.position.sub.numer}/#{x.position.sub.denom} "   
 
+    # schedule midi events just in time
     play: ->
       line_to_play = []
 

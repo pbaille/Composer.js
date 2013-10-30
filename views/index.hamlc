@@ -5,15 +5,15 @@
     %script(data-main="js/main" src="js/vendors/require_min.js")
 
   %body
-    %h1
-      = "Welcome to #{@app}"
+    / %h1
+    /   = "Welcome to #{@app}"
 
-    %button(onclick="maestro.start();"
-      play
-    %button(onclick="maestro.stop();"
-      pause  
-    #tempo
-      0
+    / %button(onclick="maestro.start();"
+    /   play
+    / %button(onclick="maestro.stop();"
+    /   pause  
+    / #tempo
+    /   0
 
     %p
       MIDI Input:

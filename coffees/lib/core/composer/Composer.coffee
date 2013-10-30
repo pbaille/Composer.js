@@ -54,8 +54,8 @@ define [
       # the order of called generators should change depending on it , 
       # and other directives should be send to generators
       @strategy() if @ahead.lt @advance
-
       @ahead.subtract timeline.resolution 
+      
 
     set_strategy: (strat_name = "default") ->  
       if strat_name is "default"
@@ -66,6 +66,14 @@ define [
           for x in line #append line to score
             @track.score.push x 
             @track.queue.push x
+
+    temp_strat: ->
+      rythmn_line = @rgen.generate2()
+      line = @mgen.melodize(rythmn_line)
+      #timeline.play_line line 
+      for x in line #append line to score
+        @track.score.push x 
+        @track.queue.push x              
             
 
 

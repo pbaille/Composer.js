@@ -132,6 +132,7 @@ define ["vendors/ruby"], () ->
     return results
 
 
+
 #   def unique_permutation_no_rot
 #     results=[]
 #     self.unique_permutation.to_a.each do |w|

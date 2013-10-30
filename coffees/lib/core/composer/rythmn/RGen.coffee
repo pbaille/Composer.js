@@ -5,6 +5,7 @@ define [
   "lib/utils/index"
   "lib/midi/play"
   "vendors/ruby"
+  "vendors/underscore"
   ], ->
 
   if typeof global != "undefined" && global != null 
@@ -67,6 +68,12 @@ define [
 
       return results
 
+    generate2: (duration, n = 12) -> #(RVal)duration (int)n (number of notes wanted)
+      rvcs = @rythmn_val_combinations(n,duration)
+      rvc = _.sample rvcs
+      console.log @rvals_allowed_permutations_at rvc, @composer.head_position()
+
+
     next: ->
 
       position = timeline.position.plus @composer.ahead
@@ -95,8 +102,7 @@ define [
         if x.occ != 0
           # push value in result if value + @head_position is on a available subdivision
           cond1 = x.rval.allowed_subs().indexOf(x.rval.plus(timeline.position.sub.plus(@composer.ahead)).denom) >= 0
-
-          results.push x if cond1 #and cond2
+          results.push x if cond1
 
       # head unable to resolve on an available subdivision, 
       # have to resolve it with non available value
@@ -111,19 +117,7 @@ define [
 
       throw " have to implement Rgen#resolve_head "
 
-    #   console.log "resolve head"
-    #   sub = @head_position().sub
-    #   value = new RVal 0
-    #   while @available_vals().indexOf(value.plus(@head_position).denom) < 0
-    #     value.add(rat(1,sub))
-    #   console.log "value= " + value
-    #   console.log "head= " + @head_position
-    #   {value: value, occ: 1} 
-
-    # head_position: ->
-    #   @timeline.position.plus(@ahead)
-
-    # compute all rat_arr combination of "size" size that sums to sum 
+    # compute all ([RVal or Rational])rat_arr combination of "size" size that sums to (RVal or Rational)sum 
     rat_dom_part: (rat_arr,size,sum) ->
 
       # all denoms array
@@ -185,8 +179,6 @@ define [
       #uniq rvals
       uniq_rvals = uniq_rvals_calc()
       
-
-      # 
       results = []   
       for i in [1..rvals.length]
         #debugger
@@ -212,7 +204,7 @@ define [
                 temp.push r.concat(rv) 
 
           results = temp  
-            
+
       return results    
               
 

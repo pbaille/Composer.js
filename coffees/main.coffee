@@ -75,9 +75,9 @@ require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jq
           args:[ 
             [
               {rval: new RVal(1,2), occ: 1 }
-              {rval: new RVal(1,4), occ: 4 }
-              {rval: new RVal(1,3), occ: 1 }
-              {rval: new RVal(1,6), occ: 4 }
+              {rval: new RVal(1,4), occ: 1 }
+              # {rval: new RVal(1,3), occ: 1 }
+              {rval: new RVal(1,6), occ: 1 }
 
             ]
           ]

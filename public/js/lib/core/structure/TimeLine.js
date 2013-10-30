@@ -95,10 +95,6 @@
         return result;
       };
 
-      TimeLine.prototype.positioned_rval_to_ms = function(pos, rval) {
-        return pos.rval_to_ms(rval);
-      };
-
       TimeLine.prototype.current_bar = function() {
         return this.grid[this.position.bar];
       };

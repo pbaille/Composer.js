@@ -2,7 +2,7 @@
 (function() {
   var __slice = [].slice;
 
-  define(["lib/core/base/RVal", "lib/core/base/Note", "lib/utils/Rational", "lib/utils/index", "lib/midi/play", "vendors/ruby"], function() {
+  define(["lib/core/base/RVal", "lib/core/base/Note", "lib/utils/Rational", "lib/utils/index", "lib/midi/play", "vendors/ruby", "vendors/underscore"], function() {
     var RVal, Rational, rat, root;
     if (typeof global !== "undefined" && global !== null) {
       root = global.AC.Core;
@@ -39,6 +39,16 @@
           results.push(this.next());
         }
         return results;
+      };
+
+      RGen.prototype.generate2 = function(duration, n) {
+        var rvc, rvcs;
+        if (n == null) {
+          n = 12;
+        }
+        rvcs = this.rythmn_val_combinations(n, duration);
+        rvc = _.sample(rvcs);
+        return console.log(this.rvals_allowed_permutations_at(rvc, this.composer.head_position()));
       };
 
       RGen.prototype.next = function() {

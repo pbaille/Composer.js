@@ -71,6 +71,19 @@
         }
       };
 
+      Composer.prototype.temp_strat = function() {
+        var line, rythmn_line, x, _i, _len, _results;
+        rythmn_line = this.rgen.generate2();
+        line = this.mgen.melodize(rythmn_line);
+        _results = [];
+        for (_i = 0, _len = line.length; _i < _len; _i++) {
+          x = line[_i];
+          this.track.score.push(x);
+          _results.push(this.track.queue.push(x));
+        }
+        return _results;
+      };
+
       return Composer;
 
     })();
