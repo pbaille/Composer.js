@@ -73,7 +73,7 @@
 
       Composer.prototype.temp_strat = function() {
         var line, rythmn_line, x, _i, _len, _results;
-        rythmn_line = this.rgen.generate2();
+        rythmn_line = this.rgen.generate2(nimp);
         line = this.mgen.melodize(rythmn_line);
         _results = [];
         for (_i = 0, _len = line.length; _i < _len; _i++) {

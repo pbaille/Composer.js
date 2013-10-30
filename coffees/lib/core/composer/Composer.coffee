@@ -68,7 +68,7 @@ define [
             @track.queue.push x
 
     temp_strat: ->
-      rythmn_line = @rgen.generate2()
+      rythmn_line = @rgen.generate2(nimp)
       line = @mgen.melodize(rythmn_line)
       #timeline.play_line line 
       for x in line #append line to score
