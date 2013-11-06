@@ -20,7 +20,9 @@ define ["lib/utils/Rational","lib/utils/Utils", "vendors/ruby"], () ->
       @times(new Rational(60,bpm)).toFloat() * 1000 
 
     polyrythmic_base: ->
-      _a.last(Utils.factorise @denom)
+      ret = _a.last(Utils.factorise @denom)
+      if ret == 1 then 2 else ret
+
 
     binary_base: ->
       pb= @polyrythmic_base() 

@@ -31,7 +31,13 @@
       };
 
       RVal.prototype.polyrythmic_base = function() {
-        return _a.last(Utils.factorise(this.denom));
+        var ret;
+        ret = _a.last(Utils.factorise(this.denom));
+        if (ret === 1) {
+          return 2;
+        } else {
+          return ret;
+        }
       };
 
       RVal.prototype.binary_base = function() {

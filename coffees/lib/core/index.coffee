@@ -16,6 +16,8 @@ define [
   "#{composer_path}/melody/MGen"
   "#{composer_path}/melody/MelodicPatternGen"
   "#{composer_path}/rythmn/RGen"
+  "#{composer_path}/rythmn/RParams"
+  "#{composer_path}/rythmn/RConstants"
   "#{composer_path}/harmony/HGen"
   "#{composer_path}/Composer"
 

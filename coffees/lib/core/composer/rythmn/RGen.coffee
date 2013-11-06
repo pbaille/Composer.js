@@ -4,18 +4,10 @@ define [
   "lib/utils/Rational"
   "lib/utils/index"
   "lib/midi/play"
-  "vendors/ruby"
   "vendors/underscore"
   ], ->
 
-  if typeof global != "undefined" && global != null 
-    root= global.AC.Core
-  else
-    root= window.AC.Core  
-
-  # RATIONAL shortcut
-  rat = (args...) ->
-    new AC.Utils.Rational args...
+  root= if global? then global.AC.Core else window.AC.Core  
 
   RVal = AC.Core.RVal
   Rational = AC.Utils.Rational    
@@ -23,40 +15,36 @@ define [
   class root.RGen
 
     constructor: (opt) ->
-      opt = {} unless opt
+      opt ?= {}
       @array = opt.prob_array || [] #array of {value: Rational_denom, occ: integer}
-
-    # add: (dur_occ_obj) ->
-
-    #   unless dur_occ_obj.length
-    #     dur_occ_obj = [dur_occ_obj]
-
-    #   for x in dur_occ_obj 
-    #     @remove x.value
-    #     @array.push x
-
-    # reset: (dur_occ_objs) ->
-    #   #console.log "reset gen"
-    #   @array = []
-    #   @add dur_occ_objs if dur_occ_objs
-
-    # rvs_sync: (rvs_table) -> 
-    #   @reset()
-    #   _h.each rvs_table, (k,v) =>
-    #     # hardcoded 4 is because of => ex: quarter note is 1 beat => 1/4 become 1
-    #     @add {value: rat(4,k), occ: v}
-
-    # remove: (dur) ->
-
-    #   rem_indexes = []
-    #   for x,i in @array
-    #     rem_indexes.push i if x.value.eq(dur)
-
-    #   for x in rem_indexes
-    #     @array.splice(x,1) 
 
     set_prob_array: (rval_occ_objects_arr) ->
       @array = rval_occ_objects_arr
+
+    build_prob_array: (opt) ->
+
+      #rythmic base (2=> bin, 3=> ter etc...)
+      base = opt.base || 2
+
+      #Object (see default)
+      poly_prob = opt.prob || {bin: 1, ter: 0, quint: 0, sept: 0} #default to pure binary
+
+      #RVal median val
+      median = opt.median || new RVal 1,2 #default to eight notes
+
+      #[RVal,RVal] bound values
+      bounds = opt.bounds || [new RVal(2), new RVal(1,4)] # default to [half, sixteenth]
+
+      #(float 0..1) median weight 
+      median_weight = opt.median_weight || 0.5
+
+      #find_all_possible_rvals
+      
+      
+
+      
+
+
          
     ############################ Should be private ########################
 
@@ -85,13 +73,8 @@ define [
           pioche.push x.rval
 
       #pick a random val in pioche and return it
-      pioche = _a.shuffle(pioche)
+      pioche = _.shuffle pioche
       @composer.ahead.add(pioche[0]) 
-
-      # console.log "pos: " + position.sub.toString()
-      # console.log "rv: " + pioche[0].toString()
-      # console.log "ahead: " + @composer.ahead.toString()
-      # console.log "mode: " + @composer.mgen.mode.name
 
       return {position: position, rval: pioche[0]}
 
@@ -130,7 +113,7 @@ define [
         x.multiply new RVal lcm
         x.toInt()
       # sort new dom
-      dom = _a.sort dom  
+      dom = _.sort dom  
       # compute new sum (sum * lcm)
       msum = sum.multiply(new RVal(lcm)).toInt()
 
