@@ -16,6 +16,7 @@ define ['lib/utils/Rational','lib/core/base/Rval', 'vendors/ruby'], () ->
     
     it "polyrythmic_base", ->
       expect(rv.polyrythmic_base()).toBe(2)
+      expect( new RVal(1,15).polyrythmic_base()).toBe(15)
 
     describe "binary_base", ->
 

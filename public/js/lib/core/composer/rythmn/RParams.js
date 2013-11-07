@@ -8,17 +8,36 @@
     Rational = AC.Utils.Rational;
     return root.RParams = (function() {
       function RParams(opt) {
+        var k, v, _ref;
         this.base = opt.base || 2;
-        this.poly_prob = opt.prob || {
-          bin: 1,
-          ter: 0,
-          quint: 0,
-          sept: 0
+        this.prob = {
+          poly_roots: {
+            bin: 1,
+            ter: 0,
+            quint: 0,
+            sept: 0
+          },
+          compositions: {
+            simple: 1,
+            double: 0.5,
+            triple: 0
+          },
+          poly_depths: {
+            one: 1,
+            two: 0,
+            three: 0
+          }
         };
+        _ref = opt.prob;
+        for (k in _ref) {
+          v = _ref[k];
+          this.prob[k] = v;
+        }
         this.median = opt.median || new RVal(1, 2);
-        this.bounds = opt.bounds || [new RVal(2), new RVal(1, 4)];
         this.median_weight = opt.median_weight || 0.5;
-        this.composed_rvals = this.composed_rvals_calc(2);
+        this.bounds = opt.bounds || [new RVal(2), new RVal(1, 4)];
+        this.simple_rvals = this.simple_rvals_calc();
+        this.composed_rvals = this.composed_rvals_calc();
       }
 
       RParams.prototype.simple_rvals_calc = function() {
@@ -41,15 +60,24 @@
         return _.concat.apply(_, arr);
       };
 
-      RParams.prototype.composed_rvals_calc = function(depth) {
-        var comb, ret, rv, sum, x, _i, _j, _k, _len, _len1, _ref;
+      RParams.prototype.composed_rvals_calc = function() {
+        var comb, depths, i, ret, rv, sum, x, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
+        depths = [];
+        _ref = _.values(this.prob.compositions);
+        for (x in _ref) {
+          i = _ref[x];
+          if (x !== 0) {
+            depth.push(i);
+          }
+        }
         ret = [];
-        for (x = _i = 2; 2 <= depth ? _i <= depth : _i >= depth; x = 2 <= depth ? ++_i : --_i) {
-          _ref = _.combinations(this.simple_rvals_array(), x);
-          for (_j = 0, _len = _ref.length; _j < _len; _j++) {
-            comb = _ref[_j];
+        for (_i = 0, _len = depths.length; _i < _len; _i++) {
+          x = depths[_i];
+          _ref1 = _.combinations(this.simple_rvals_array(), x);
+          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+            comb = _ref1[_j];
             sum = new RVal(0);
-            for (_k = 0, _len1 = comb.length; _k < _len1; _k++) {
+            for (_k = 0, _len2 = comb.length; _k < _len2; _k++) {
               rv = comb[_k];
               sum.add(rv);
             }

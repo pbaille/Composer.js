@@ -26,6 +26,42 @@
           return _.lcm(arr0, _.lcmm(arr));
         }
       },
+      sum: function(arr) {
+        return _.reduce(arr, function(acc, el) {
+          return acc += el;
+        });
+      },
+      product: function() {
+        var args;
+        args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+        if (_.isArray(args[0])) {
+          args = args[0];
+        }
+        return _.reduce(args, function(a, b) {
+          return a * b;
+        }, 1);
+      },
+      factorise: function(numm) {
+        var checker, newnum, result;
+        if (numm === 1) {
+          return [1];
+        }
+        newnum = numm;
+        result = [];
+        checker = 2;
+        while (checker * checker <= newnum) {
+          if (newnum % checker === 0) {
+            result.push(checker);
+            newnum = newnum / checker;
+          } else {
+            checker++;
+          }
+        }
+        if (newnum !== 1) {
+          result.push(newnum);
+        }
+        return result;
+      },
       sort: function(arr) {
         return arr.sort(10);
       },
@@ -66,11 +102,6 @@
       },
       median: function(arr) {
         return _.sum(arr) / arr.length;
-      },
-      sum: function(arr) {
-        return _.reduce(arr, function(acc, el) {
-          return acc += el;
-        });
       },
       deepUniq: function(coll) {
         var recursive_pick_and_clean, result;

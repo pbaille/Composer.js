@@ -14,7 +14,8 @@
         return expect(rv.to_ms(120)).toEqual(250);
       });
       it("polyrythmic_base", function() {
-        return expect(rv.polyrythmic_base()).toBe(2);
+        expect(rv.polyrythmic_base()).toBe(2);
+        return expect(new RVal(1, 15).polyrythmic_base()).toBe(15);
       });
       describe("binary_base", function() {
         it("with binary val", function() {

@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["lib/utils/Rational", "lib/utils/Utils", "vendors/ruby"], function() {
+  define(["lib/utils/Rational", "lib/utils/Utils", "vendors/ruby", "vendors/underscore", "lib/utils/underscore_adds"], function() {
     var Rational, Utils, root;
     if (typeof global !== "undefined" && global !== null) {
       root = global.AC.Core;
@@ -32,11 +32,13 @@
 
       RVal.prototype.polyrythmic_base = function() {
         var ret;
-        ret = _a.last(Utils.factorise(this.denom));
-        if (ret === 1) {
+        ret = _.filter(_.factorise(this.denom), function(x) {
+          return x !== 2 && x !== 1;
+        });
+        if (_.isEmpty(ret)) {
           return 2;
         } else {
-          return ret;
+          return _.product(ret);
         }
       };
 

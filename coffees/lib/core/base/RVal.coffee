@@ -1,4 +1,4 @@
-define ["lib/utils/Rational","lib/utils/Utils", "vendors/ruby"], () ->
+define ["lib/utils/Rational","lib/utils/Utils", "vendors/ruby","vendors/underscore","lib/utils/underscore_adds"], () ->
 
   if typeof global != "undefined" && global != null 
     root= global.AC.Core
@@ -19,10 +19,18 @@ define ["lib/utils/Rational","lib/utils/Utils", "vendors/ruby"], () ->
     to_ms: (bpm) ->
       @times(new Rational(60,bpm)).toFloat() * 1000 
 
+    #return 1 if rval is a binary value else return product of polyrythmic bases
+    # examples : 
+    # rval(1,2) => 2 
+    # rval(1,3) => 3
+    # rval(1,15) => 15
+    # rval(1,6) => 3
     polyrythmic_base: ->
-      ret = _a.last(Utils.factorise @denom)
-      if ret == 1 then 2 else ret
-
+      ret = _.filter _.factorise(@denom), (x) -> x isnt 2 and x isnt 1
+      if _.isEmpty(ret)
+        return 2
+      else 
+        return _.product ret
 
     binary_base: ->
       pb= @polyrythmic_base() 

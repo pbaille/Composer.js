@@ -24,6 +24,37 @@ define ["vendors/underscore"], ->
       else
         arr0 = arr.shift()
         _.lcm arr0, _.lcmm(arr)
+
+    sum: (arr)->
+      _.reduce arr, (acc, el) -> acc+= el
+    
+    # can be passed either array of Numbers or several Numbers
+    product: (args...) ->
+      args = args[0] if _.isArray args[0]
+      _.reduce args, (a,b) ->
+        a*b
+      , 1     
+
+    factorise: (numm) ->             # To calculate the prime factors of a number
+    
+      return [1] if numm is 1
+      
+      newnum = numm                        # Initialise
+      result = []
+      checker = 2                          # First possible factor to check
+    
+      while (checker*checker <= newnum)    # See if it is worth looking further for factors 
+    
+        if (newnum % checker == 0)         # If the possible factor is indeed a factor...
+          result.push checker              # ...then record the factor
+          newnum = newnum/checker          # and divide by it
+        else                               # otherwise...
+          checker++                        # try the next possible factor
+    
+      if (newnum != 1)                     # If there is anything left at the end...
+        result.push newnum                 # so it too should be recorded
+    
+      return result                        # Return the prime factors    
       
   ############## generic ##############################
     
@@ -58,9 +89,7 @@ define ["vendors/underscore"], ->
     median: (arr) ->
       _.sum(arr)/arr.length
   
-    sum: (arr)->
-      _.reduce arr, (acc, el) -> acc+= el
-  
+    
     # underscore's uniq works only on [primitives]
     deepUniq: (coll) ->
       result = []
