@@ -148,6 +148,23 @@
         return this.rvals_calc();
       };
 
+      RParams.prototype.set = function(obj) {
+        if (opt.median) {
+          this.median = opt.median;
+        }
+        if (opt.median_weight) {
+          this.median_weight = opt.median_weight;
+        }
+        if (opt.bounds) {
+          this.bounds = opt.bounds;
+        }
+        if (obj.prob) {
+          return this.set_prob(obj.prob);
+        } else {
+          return this.rvals_calc();
+        }
+      };
+
       return RParams;
 
     })();

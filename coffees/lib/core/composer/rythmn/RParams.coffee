@@ -116,6 +116,12 @@ define [
       @prob.poly_roots[k] = v for k,v of obj.poly_roots 
       @prob.compositions[k] = v for k,v of obj.compositions
       @rvals_calc() 
+    set: (obj) ->
+      @median = opt.median if opt.median
+      @median_weight = opt.median_weight if opt.median_weight
+      @bounds = opt.bounds if opt.bounds
+      if obj.prob then @set_prob(obj.prob) else @rvals_calc()
+        
         
 
         
