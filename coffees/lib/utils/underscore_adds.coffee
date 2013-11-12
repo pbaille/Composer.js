@@ -86,8 +86,9 @@ define ["vendors/underscore"], ->
     uniqRotations: (arr) ->
       _.compose(_.uniq, _.rotations)(arr)
   
-    median: (arr) ->
-      _.sum(arr)/arr.length
+    median: (args...) ->
+      args = args[0] if _.isArray args[0]
+      _.sum(args)/args.length
   
     
     # underscore's uniq works only on [primitives]
@@ -107,6 +108,29 @@ define ["vendors/underscore"], ->
       
       recursive_pick_and_clean coll
       result  
+
+    scale: (numArray, inMin, inMax, outMin, outMax) ->
+      
+      if arguments.length is 5
+        # Figure out how 'wide' each range is
+        inSpan = inMax - inMin
+        outSpan = outMax - outMin
+
+        map_fun = (elem) ->
+          # Convert the left range into a 0-1 range (float)
+          valueScaled = (elem - inMin) / inSpan
+          # Convert the 0-1 range into a value in the out range.
+          outMin + (valueScaled * outSpan)
+        
+        if _.isArray(numArray) then return _.map numArray, map_fun
+        else return map_fun(numArray)
+            
+      # return a curry4 function that takes only an array    
+      else if arguments.length is 4
+        args = _.toArray arguments
+        return (arr) ->
+          _.scale(arr,args[0], args[1], args[2], args[3])
+
   
   ################# music purpose ############################# 
   

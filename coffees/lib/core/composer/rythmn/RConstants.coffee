@@ -13,8 +13,10 @@ define [
 
   RK = root.RK = {}
 
-  RK.bases = [2,3,5,7]
-  RK.bases_names = ["bin", "ter", "quint", "sept"]
+  RK.bases_map = {bin: 2, ter: 3, quint: 5, sept: 7}
+  RK.bases = _.values RK.bases_map
+  RK.bases_names = _.keys RK.bases_map
+
 
   RK.bounds = [new RVal(4),new RVal(1,16)] #from whole to "quadruple croche"
 
@@ -27,29 +29,6 @@ define [
         ret[RK.bases_names[i]].push current_val.clone()
         current_val.divide new RVal 2
     return ret
-  
-  #return rvals like 3/2, 7/4 , 5/6 etc (simple_rvals mult by nonself bases) 
-  RK.composite_rvals = do ->
-    ret = {bin:[], ter:[], quint:[], sept:[]}
-    for base_name,rvals of RK.simple_rvals
-      base_index = _.indexOf RK.bases_names,base_name
-      base = RK.bases[base_index]
-      for rv in rvals
-        for b in RK.bases[1..] #remove base 2
-          temp = rv.clone().times new RVal(b)
-          unless b == base or temp.ge RK.bounds[0]
-            ret[base_name].push temp 
-    return ret  	  	
-  
-  RK.poly_rvals = "TODO"
-
-  RK.all_rvals = do ->
-  	ret = {}
-  	simple = RK.simple_rvals
-  	composite = RK.composite_rvals
-  	for k in RK.bases_names
-      ret[k] = _.concat simple[k], composite[k]
-    return ret  
 
   #########  
   return RK  

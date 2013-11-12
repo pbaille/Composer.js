@@ -100,8 +100,13 @@
       uniqRotations: function(arr) {
         return _.compose(_.uniq, _.rotations)(arr);
       },
-      median: function(arr) {
-        return _.sum(arr) / arr.length;
+      median: function() {
+        var args;
+        args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+        if (_.isArray(args[0])) {
+          args = args[0];
+        }
+        return _.sum(args) / args.length;
       },
       deepUniq: function(coll) {
         var recursive_pick_and_clean, result;
@@ -121,6 +126,28 @@
         };
         recursive_pick_and_clean(coll);
         return result;
+      },
+      scale: function(numArray, inMin, inMax, outMin, outMax) {
+        var args, inSpan, map_fun, outSpan;
+        if (arguments.length === 5) {
+          inSpan = inMax - inMin;
+          outSpan = outMax - outMin;
+          map_fun = function(elem) {
+            var valueScaled;
+            valueScaled = (elem - inMin) / inSpan;
+            return outMin + (valueScaled * outSpan);
+          };
+          if (_.isArray(numArray)) {
+            return _.map(numArray, map_fun);
+          } else {
+            return map_fun(numArray);
+          }
+        } else if (arguments.length === 4) {
+          args = _.toArray(arguments);
+          return function(arr) {
+            return _.scale(arr, args[0], args[1], args[2], args[3]);
+          };
+        }
       },
       tonicize: function(arr) {
         return _(arr).map(function(x, i, c) {

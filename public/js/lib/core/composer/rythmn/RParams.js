@@ -9,11 +9,10 @@
     return root.RParams = (function() {
       function RParams(opt) {
         var k, v, _ref;
-        this.base = opt.base || 2;
         this.prob = {
           poly_roots: {
             bin: 1,
-            ter: 0,
+            ter: 0.5,
             quint: 0,
             sept: 0
           },
@@ -21,11 +20,6 @@
             simple: 1,
             double: 0.5,
             triple: 0
-          },
-          poly_depths: {
-            one: 1,
-            two: 0,
-            three: 0
           }
         };
         _ref = opt.prob;
@@ -34,59 +28,124 @@
           this.prob[k] = v;
         }
         this.median = opt.median || new RVal(1, 2);
-        this.median_weight = opt.median_weight || 0.5;
+        this.median_weight = opt.median_weight || 10;
         this.bounds = opt.bounds || [new RVal(2), new RVal(1, 4)];
-        this.simple_rvals = this.simple_rvals_calc();
-        this.composed_rvals = this.composed_rvals_calc();
+        this.rvals = {};
+        this.rvals_calc();
       }
 
+      RParams.prototype.rvals_calc = function() {
+        this.rvals.simple = this.simple_rvals_calc();
+        return this.rvals.composed = this.composed_rvals_calc();
+      };
+
       RParams.prototype.simple_rvals_calc = function() {
-        var k, ret, v, _ref,
+        var el, k, ret, rvals, v, _i, _len, _ref,
           _this = this;
-        ret = {};
+        ret = [];
         _ref = RK.simple_rvals;
         for (k in _ref) {
           v = _ref[k];
-          ret[k] = _.filter(v, function(x) {
-            return x.le(_this.bounds[0]) && x.ge(_this.bounds[1]);
-          });
+          if (this.prob.poly_roots[k] !== 0) {
+            rvals = _.filter(v, function(x) {
+              return x.le(_this.bounds[0]) && x.ge(_this.bounds[1]);
+            });
+            for (_i = 0, _len = rvals.length; _i < _len; _i++) {
+              el = rvals[_i];
+              el.prob = {
+                poly: this.prob.poly_roots[k],
+                composition: this.prob.compositions.simple,
+                distance: this.distance_prob(el)
+              };
+              ret.push(el);
+            }
+          }
         }
         return ret;
-      };
-
-      RParams.prototype.simple_rvals_array = function() {
-        var arr;
-        arr = _.values(this.simple_rvals_calc());
-        return _.concat.apply(_, arr);
       };
 
       RParams.prototype.composed_rvals_calc = function() {
-        var comb, depths, i, ret, rv, sum, x, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
-        depths = [];
-        _ref = _.values(this.prob.compositions);
-        for (x in _ref) {
-          i = _ref[x];
-          if (x !== 0) {
-            depth.push(i);
-          }
-        }
+        var comb, isnt_a_simple_rval, k, n, poly_base_based_group, poly_group, prob, ret, rv, v, val, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
         ret = [];
-        for (_i = 0, _len = depths.length; _i < _len; _i++) {
-          x = depths[_i];
-          _ref1 = _.combinations(this.simple_rvals_array(), x);
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            comb = _ref1[_j];
-            sum = new RVal(0);
-            for (_k = 0, _len2 = comb.length; _k < _len2; _k++) {
-              rv = comb[_k];
-              sum.add(rv);
-            }
-            if (sum.le(this.bounds[0]) && sum.ge(this.bounds[1])) {
-              ret.push(sum);
+        _ref = this.prob.compositions;
+        for (k in _ref) {
+          v = _ref[k];
+          if (v !== 0 && k !== "simple") {
+            n = k === "double" ? 2 : 3;
+            poly_base_based_group = _.groupBy(this.rvals.simple, function(x) {
+              return x.polyrythmic_base();
+            });
+            _ref1 = _.values(poly_base_based_group);
+            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+              poly_group = _ref1[_i];
+              _ref2 = _.combinations(poly_group, n);
+              for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+                comb = _ref2[_j];
+                val = new RVal(0);
+                for (_k = 0, _len2 = comb.length; _k < _len2; _k++) {
+                  rv = comb[_k];
+                  val.add(rv);
+                }
+                isnt_a_simple_rval = val.polyrythmic_base() === comb[0].polyrythmic_base();
+                if (val.le(this.bounds[0]) && val.ge(this.bounds[1]) && isnt_a_simple_rval) {
+                  ret.push(val);
+                }
+                prob = {
+                  poly: _.median(_.map(comb, function(el) {
+                    return el.prob.poly;
+                  })),
+                  composition: this.prob.compositions[k],
+                  distance: this.distance_prob(val)
+                };
+                val.prob = prob;
+              }
             }
           }
         }
         return ret;
+      };
+
+      RParams.prototype.distance_prob = function(rval) {
+        if (rval.lt(this.median)) {
+          return _.scale(this.median.minus(rval).toFloat(), this.median.minus(this.bounds[1]).toFloat(), 0, 1, this.median_weight);
+        } else if (rval.gt(this.median)) {
+          return _.scale(rval.minus(this.median).toFloat(), this.bounds[0].minus(this.median).toFloat(), 0, 1, this.median_weight);
+        } else {
+          return this.median_weight;
+        }
+      };
+
+      RParams.prototype.set_median = function(rval) {
+        this.median = rval;
+        return this.rvals_calc();
+      };
+
+      RParams.prototype.set_median_weight = function(int) {
+        this.median_weight = int;
+        return this.rvals_calc();
+      };
+
+      RParams.prototype.set_bounds = function(slowest, highest) {
+        this.bounds = [slowest, highest];
+        return this.rvals_calc();
+      };
+
+      RParams.prototype.set_prob = function(obj) {
+        var k, v, _ref, _ref1;
+        if (!obj) {
+          return false;
+        }
+        _ref = obj.poly_roots;
+        for (k in _ref) {
+          v = _ref[k];
+          this.prob.poly_roots[k] = v;
+        }
+        _ref1 = obj.compositions;
+        for (k in _ref1) {
+          v = _ref1[k];
+          this.prob.compositions[k] = v;
+        }
+        return this.rvals_calc();
       };
 
       return RParams;

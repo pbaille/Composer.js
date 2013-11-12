@@ -6,8 +6,14 @@
     RVal = AC.Core.RVal;
     Rational = AC.Utils.Rational;
     RK = root.RK = {};
-    RK.bases = [2, 3, 5, 7];
-    RK.bases_names = ["bin", "ter", "quint", "sept"];
+    RK.bases_map = {
+      bin: 2,
+      ter: 3,
+      quint: 5,
+      sept: 7
+    };
+    RK.bases = _.values(RK.bases_map);
+    RK.bases_names = _.keys(RK.bases_map);
     RK.bounds = [new RVal(4), new RVal(1, 16)];
     RK.simple_rvals = (function() {
       var base, current_val, i, ret, _i, _len, _ref;
@@ -28,46 +34,6 @@
           ret[RK.bases_names[i]].push(current_val.clone());
           current_val.divide(new RVal(2));
         }
-      }
-      return ret;
-    })();
-    RK.composite_rvals = (function() {
-      var b, base, base_index, base_name, ret, rv, rvals, temp, _i, _j, _len, _len1, _ref, _ref1;
-      ret = {
-        bin: [],
-        ter: [],
-        quint: [],
-        sept: []
-      };
-      _ref = RK.simple_rvals;
-      for (base_name in _ref) {
-        rvals = _ref[base_name];
-        base_index = _.indexOf(RK.bases_names, base_name);
-        base = RK.bases[base_index];
-        for (_i = 0, _len = rvals.length; _i < _len; _i++) {
-          rv = rvals[_i];
-          _ref1 = RK.bases.slice(1);
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            b = _ref1[_j];
-            temp = rv.clone().times(new RVal(b));
-            if (!(b === base || temp.ge(RK.bounds[0]))) {
-              ret[base_name].push(temp);
-            }
-          }
-        }
-      }
-      return ret;
-    })();
-    RK.poly_rvals = "TODO";
-    RK.all_rvals = (function() {
-      var composite, k, ret, simple, _i, _len, _ref;
-      ret = {};
-      simple = RK.simple_rvals;
-      composite = RK.composite_rvals;
-      _ref = RK.bases_names;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        k = _ref[_i];
-        ret[k] = _.concat(simple[k], composite[k]);
       }
       return ret;
     })();

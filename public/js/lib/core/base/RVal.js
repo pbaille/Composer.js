@@ -42,6 +42,10 @@
         }
       };
 
+      RVal.prototype.rythmn_bases = function() {
+        return _.factorise(this.denom);
+      };
+
       RVal.prototype.binary_base = function() {
         var pb;
         pb = this.polyrythmic_base();

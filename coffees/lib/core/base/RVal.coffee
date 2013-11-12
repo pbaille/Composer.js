@@ -32,6 +32,9 @@ define ["lib/utils/Rational","lib/utils/Utils", "vendors/ruby","vendors/undersco
       else 
         return _.product ret
 
+    rythmn_bases: ->
+      _.factorise @denom   
+
     binary_base: ->
       pb= @polyrythmic_base() 
       if pb == 2 
