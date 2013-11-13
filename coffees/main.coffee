@@ -20,7 +20,7 @@ window.AC.GUI = {}
 #####################
 console.clear()
     
-require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jquery"], ()->
+require ["lib/core/index","lib/GUI/index","lib/midi/index","lib/utils/index","jquery","vendors/weightedList"], ()->
 
   window.rat = (n,d) ->
     new AC.Utils.Rational(n,d)

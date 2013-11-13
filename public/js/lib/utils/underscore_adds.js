@@ -2,7 +2,7 @@
 (function() {
   var __slice = [].slice;
 
-  define(["vendors/underscore"], function() {
+  define(["vendors/underscore", "vendors/weightedList"], function() {
     return _.mixin({
       gcd: function(a, b) {
         var t;
@@ -311,6 +311,16 @@
         };
         sumRecursive(size, 0, arr);
         return results;
+      },
+      weightedList: function() {
+        var args;
+        args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+        if (args[1]) {
+          args = _.concat(args);
+        } else {
+          args = args[0];
+        }
+        return new WeightedList(args);
       }
     });
   });

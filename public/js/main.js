@@ -29,7 +29,7 @@
 
   console.clear();
 
-  require(["lib/core/index", "lib/GUI/index", "lib/midi/index", "lib/utils/index", "jquery"], function() {
+  require(["lib/core/index", "lib/GUI/index", "lib/midi/index", "lib/utils/index", "jquery", "vendors/weightedList"], function() {
     window.rat = function(n, d) {
       return new AC.Utils.Rational(n, d);
     };

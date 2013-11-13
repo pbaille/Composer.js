@@ -1,4 +1,4 @@
-define ["vendors/underscore"], ->
+define ["vendors/underscore","vendors/weightedList"], ->
 
   _.mixin
   
@@ -253,6 +253,13 @@ define ["vendors/underscore"], ->
   
       sumRecursive(size, 0, arr) 
       return results     
+
+  ############################# PROB ##############################
+
+    weightedList: (args...) ->
+      if args[1] then args = _.concat(args) else args = args[0]
+      return new WeightedList args
+
 
 
 # console.log _.rotations([1,2,3]) 

@@ -6,8 +6,8 @@
     RK = root.RK;
     RVal = AC.Core.RVal;
     Rational = AC.Utils.Rational;
-    return root.RParams = (function() {
-      function RParams(opt) {
+    return root.RDomain = (function() {
+      function RDomain(opt) {
         var k, v, _ref;
         this.prob = {
           poly_roots: {
@@ -31,15 +31,101 @@
         this.median_weight = opt.median_weight || 10;
         this.bounds = opt.bounds || [new RVal(2), new RVal(1, 4)];
         this.rvals = {};
-        this.rvals_calc();
+        this._rvals_calc();
+        this.pool = this._make_pool();
       }
 
-      RParams.prototype.rvals_calc = function() {
-        this.rvals.simple = this.simple_rvals_calc();
-        return this.rvals.composed = this.composed_rvals_calc();
+      RDomain.prototype.peek_one = function() {
+        return this.pool.peek()[0];
       };
 
-      RParams.prototype.simple_rvals_calc = function() {
+      RDomain.prototype.peek_uniqs = function(n, removeBool) {
+        return this.pool.peek(n, removeBool);
+      };
+
+      RDomain.prototype.peek = function(n) {
+        var i, _i, _results;
+        _results = [];
+        for (i = _i = 1; 1 <= n ? _i <= n : _i >= n; i = 1 <= n ? ++_i : --_i) {
+          _results.push(this.peek_one());
+        }
+        return _results;
+      };
+
+      RDomain.prototype.pop = function(n) {
+        return this.pool.pop(n);
+      };
+
+      RDomain.prototype.set_median = function(rval) {
+        this.median = rval;
+        this._rvals_calc();
+        return this;
+      };
+
+      RDomain.prototype.set_median_weight = function(int) {
+        this.median_weight = int;
+        this._rvals_calc();
+        return this;
+      };
+
+      RDomain.prototype.set_bounds = function(slowest, highest) {
+        this.bounds = [slowest, highest];
+        this._rvals_calc();
+        return this;
+      };
+
+      RDomain.prototype.set_prob = function(obj) {
+        var k, v, _ref, _ref1;
+        if (!obj) {
+          return false;
+        }
+        _ref = obj.poly_roots;
+        for (k in _ref) {
+          v = _ref[k];
+          this.prob.poly_roots[k] = v;
+        }
+        _ref1 = obj.compositions;
+        for (k in _ref1) {
+          v = _ref1[k];
+          this.prob.compositions[k] = v;
+        }
+        this._rvals_calc();
+        return this;
+      };
+
+      RDomain.prototype.set = function(obj) {
+        if (opt.median) {
+          this.median = opt.median;
+        }
+        if (opt.median_weight) {
+          this.median_weight = opt.median_weight;
+        }
+        if (opt.bounds) {
+          this.bounds = opt.bounds;
+        }
+        if (obj.prob) {
+          this.set_prob(obj.prob);
+        } else {
+          this._rvals_calc();
+        }
+        return this;
+      };
+
+      RDomain.prototype._make_pool = function() {
+        var data, rvals;
+        rvals = _.concat(this.rvals.simple, this.rvals.composed);
+        data = _.map(rvals, function(x) {
+          return [x.toString(), _.product(_.values(x.prob)), x];
+        });
+        return _.weightedList(data);
+      };
+
+      RDomain.prototype._rvals_calc = function() {
+        this.rvals.simple = this._simple_rvals_calc();
+        return this.rvals.composed = this._composed_rvals_calc();
+      };
+
+      RDomain.prototype._simple_rvals_calc = function() {
         var el, k, ret, rvals, v, _i, _len, _ref,
           _this = this;
         ret = [];
@@ -47,15 +133,15 @@
         for (k in _ref) {
           v = _ref[k];
           if (this.prob.poly_roots[k] !== 0) {
-            rvals = _.filter(v, function(x) {
-              return x.le(_this.bounds[0]) && x.ge(_this.bounds[1]);
+            rvals = _.filter(v, function(rval) {
+              return _this._in_bounds(rval);
             });
             for (_i = 0, _len = rvals.length; _i < _len; _i++) {
               el = rvals[_i];
               el.prob = {
                 poly: this.prob.poly_roots[k],
                 composition: this.prob.compositions.simple,
-                distance: this.distance_prob(el)
+                distance: this._distance_prob(el)
               };
               ret.push(el);
             }
@@ -64,7 +150,7 @@
         return ret;
       };
 
-      RParams.prototype.composed_rvals_calc = function() {
+      RDomain.prototype._composed_rvals_calc = function() {
         var comb, isnt_a_simple_rval, k, n, poly_base_based_group, poly_group, prob, ret, rv, v, val, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
         ret = [];
         _ref = this.prob.compositions;
@@ -87,7 +173,7 @@
                   val.add(rv);
                 }
                 isnt_a_simple_rval = val.polyrythmic_base() === comb[0].polyrythmic_base();
-                if (val.le(this.bounds[0]) && val.ge(this.bounds[1]) && isnt_a_simple_rval) {
+                if (this._in_bounds(val) && isnt_a_simple_rval) {
                   ret.push(val);
                 }
                 prob = {
@@ -95,7 +181,7 @@
                     return el.prob.poly;
                   })),
                   composition: this.prob.compositions[k],
-                  distance: this.distance_prob(val)
+                  distance: this._distance_prob(val)
                 };
                 val.prob = prob;
               }
@@ -105,7 +191,7 @@
         return ret;
       };
 
-      RParams.prototype.distance_prob = function(rval) {
+      RDomain.prototype._distance_prob = function(rval) {
         if (rval.lt(this.median)) {
           return _.scale(this.median.minus(rval).toFloat(), this.median.minus(this.bounds[1]).toFloat(), 0, 1, this.median_weight);
         } else if (rval.gt(this.median)) {
@@ -115,57 +201,11 @@
         }
       };
 
-      RParams.prototype.set_median = function(rval) {
-        this.median = rval;
-        return this.rvals_calc();
+      RDomain.prototype._in_bounds = function(rval) {
+        return rval.le(this.bounds[0]) && rval.ge(this.bounds[1]);
       };
 
-      RParams.prototype.set_median_weight = function(int) {
-        this.median_weight = int;
-        return this.rvals_calc();
-      };
-
-      RParams.prototype.set_bounds = function(slowest, highest) {
-        this.bounds = [slowest, highest];
-        return this.rvals_calc();
-      };
-
-      RParams.prototype.set_prob = function(obj) {
-        var k, v, _ref, _ref1;
-        if (!obj) {
-          return false;
-        }
-        _ref = obj.poly_roots;
-        for (k in _ref) {
-          v = _ref[k];
-          this.prob.poly_roots[k] = v;
-        }
-        _ref1 = obj.compositions;
-        for (k in _ref1) {
-          v = _ref1[k];
-          this.prob.compositions[k] = v;
-        }
-        return this.rvals_calc();
-      };
-
-      RParams.prototype.set = function(obj) {
-        if (opt.median) {
-          this.median = opt.median;
-        }
-        if (opt.median_weight) {
-          this.median_weight = opt.median_weight;
-        }
-        if (opt.bounds) {
-          this.bounds = opt.bounds;
-        }
-        if (obj.prob) {
-          return this.set_prob(obj.prob);
-        } else {
-          return this.rvals_calc();
-        }
-      };
-
-      return RParams;
+      return RDomain;
 
     })();
   });
